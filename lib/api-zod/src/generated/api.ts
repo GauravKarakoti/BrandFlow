@@ -23,12 +23,12 @@ export const HealthCheckResponse = zod.object({
 export const ListPostsQueryParams = zod.object({
   "platform": zod.coerce.string().optional(),
   "status": zod.coerce.string().optional(),
-  "limit": zod.coerce.number().int().optional(),
-  "offset": zod.coerce.number().int().optional()
+  "limit": zod.coerce.number().optional(),
+  "offset": zod.coerce.number().optional()
 })
 
 export const ListPostsResponseItem = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "content": zod.string(),
   "caption": zod.string().nullish(),
   "hashtags": zod.string().nullish(),
@@ -62,7 +62,7 @@ export const CreatePostBody = zod.object({
 })
 
 export const CreatePostResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "content": zod.string(),
   "caption": zod.string().nullish(),
   "hashtags": zod.string().nullish(),
@@ -85,11 +85,11 @@ export const CreatePostResponse = zod.object({
  * @summary Get post by id
  */
 export const GetPostParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const GetPostResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "content": zod.string(),
   "caption": zod.string().nullish(),
   "hashtags": zod.string().nullish(),
@@ -112,7 +112,7 @@ export const GetPostResponse = zod.object({
  * @summary Update a post
  */
 export const UpdatePostParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const UpdatePostBody = zod.object({
@@ -127,7 +127,7 @@ export const UpdatePostBody = zod.object({
 })
 
 export const UpdatePostResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "content": zod.string(),
   "caption": zod.string().nullish(),
   "hashtags": zod.string().nullish(),
@@ -150,7 +150,7 @@ export const UpdatePostResponse = zod.object({
  * @summary Delete a post
  */
 export const DeletePostParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const DeletePostResponse = zod.void()
@@ -166,14 +166,14 @@ export const ListSchedulesQueryParams = zod.object({
 })
 
 export const ListSchedulesResponseItem = zod.object({
-  "id": zod.int(),
-  "postId": zod.int(),
+  "id": zod.number(),
+  "postId": zod.number(),
   "scheduledAt": zod.string(),
   "platform": zod.string(),
   "status": zod.enum(['pending', 'sent', 'failed', 'cancelled']),
   "createdAt": zod.string(),
   "post": zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "content": zod.string(),
   "caption": zod.string().nullish(),
   "hashtags": zod.string().nullish(),
@@ -198,20 +198,20 @@ export const ListSchedulesResponse = zod.array(ListSchedulesResponseItem)
  * @summary Schedule a post
  */
 export const CreateScheduleBody = zod.object({
-  "postId": zod.int(),
+  "postId": zod.number(),
   "scheduledAt": zod.string(),
   "platform": zod.string()
 })
 
 export const CreateScheduleResponse = zod.object({
-  "id": zod.int(),
-  "postId": zod.int(),
+  "id": zod.number(),
+  "postId": zod.number(),
   "scheduledAt": zod.string(),
   "platform": zod.string(),
   "status": zod.enum(['pending', 'sent', 'failed', 'cancelled']),
   "createdAt": zod.string(),
   "post": zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "content": zod.string(),
   "caption": zod.string().nullish(),
   "hashtags": zod.string().nullish(),
@@ -235,7 +235,7 @@ export const CreateScheduleResponse = zod.object({
  * @summary Update a schedule
  */
 export const UpdateScheduleParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const UpdateScheduleBody = zod.object({
@@ -244,14 +244,14 @@ export const UpdateScheduleBody = zod.object({
 })
 
 export const UpdateScheduleResponse = zod.object({
-  "id": zod.int(),
-  "postId": zod.int(),
+  "id": zod.number(),
+  "postId": zod.number(),
   "scheduledAt": zod.string(),
   "platform": zod.string(),
   "status": zod.enum(['pending', 'sent', 'failed', 'cancelled']),
   "createdAt": zod.string(),
   "post": zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "content": zod.string(),
   "caption": zod.string().nullish(),
   "hashtags": zod.string().nullish(),
@@ -275,7 +275,7 @@ export const UpdateScheduleResponse = zod.object({
  * @summary Delete a schedule
  */
 export const DeleteScheduleParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const DeleteScheduleResponse = zod.void()
@@ -290,7 +290,7 @@ export const GenerateContentBody = zod.object({
   "tone": zod.enum(['professional', 'funny', 'casual', 'luxury', 'startup', 'corporate']).optional(),
   "includeHashtags": zod.boolean().optional(),
   "includeEmojis": zod.boolean().optional(),
-  "variations": zod.int().optional()
+  "variations": zod.number().optional()
 })
 
 export const GenerateContentResponse = zod.object({
@@ -308,7 +308,7 @@ export const GenerateContentResponse = zod.object({
 export const GenerateHashtagsBody = zod.object({
   "content": zod.string(),
   "platform": zod.string().optional(),
-  "count": zod.int().optional()
+  "count": zod.number().optional()
 })
 
 export const GenerateHashtagsResponse = zod.object({
@@ -349,13 +349,13 @@ export const AiChatResponse = zod.object({
  * @summary Get high-level analytics overview
  */
 export const GetAnalyticsOverviewResponse = zod.object({
-  "totalPosts": zod.int(),
-  "totalReach": zod.int(),
-  "totalEngagement": zod.int(),
-  "followerCount": zod.int(),
+  "totalPosts": zod.number(),
+  "totalReach": zod.number(),
+  "totalEngagement": zod.number(),
+  "followerCount": zod.number(),
   "engagementRate": zod.number(),
-  "impressions": zod.int(),
-  "postsThisWeek": zod.int().optional(),
+  "impressions": zod.number(),
+  "postsThisWeek": zod.number().optional(),
   "growthPercent": zod.number().optional()
 })
 
@@ -365,10 +365,10 @@ export const GetAnalyticsOverviewResponse = zod.object({
  */
 export const GetAnalyticsByPlatformResponseItem = zod.object({
   "platform": zod.string(),
-  "posts": zod.int(),
-  "reach": zod.int(),
-  "engagement": zod.int(),
-  "followers": zod.int(),
+  "posts": zod.number(),
+  "reach": zod.number(),
+  "engagement": zod.number(),
+  "followers": zod.number(),
   "engagementRate": zod.number().optional()
 })
 export const GetAnalyticsByPlatformResponse = zod.array(GetAnalyticsByPlatformResponseItem)
@@ -378,15 +378,15 @@ export const GetAnalyticsByPlatformResponse = zod.array(GetAnalyticsByPlatformRe
  * @summary Get engagement trend data over time
  */
 export const GetAnalyticsTrendsQueryParams = zod.object({
-  "days": zod.coerce.number().int().optional()
+  "days": zod.coerce.number().optional()
 })
 
 export const GetAnalyticsTrendsResponseItem = zod.object({
   "date": zod.string(),
-  "engagement": zod.int(),
-  "reach": zod.int(),
-  "impressions": zod.int(),
-  "followers": zod.int().optional()
+  "engagement": zod.number(),
+  "reach": zod.number(),
+  "impressions": zod.number(),
+  "followers": zod.number().optional()
 })
 export const GetAnalyticsTrendsResponse = zod.array(GetAnalyticsTrendsResponseItem)
 
@@ -397,11 +397,11 @@ export const GetAnalyticsTrendsResponse = zod.array(GetAnalyticsTrendsResponseIt
 export const ListCommentsQueryParams = zod.object({
   "platform": zod.coerce.string().optional(),
   "status": zod.coerce.string().optional(),
-  "limit": zod.coerce.number().int().optional()
+  "limit": zod.coerce.number().optional()
 })
 
 export const ListCommentsResponseItem = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "postId": zod.int().nullish(),
   "authorName": zod.string(),
   "authorAvatar": zod.string().nullish(),
@@ -419,7 +419,7 @@ export const ListCommentsResponse = zod.array(ListCommentsResponseItem)
  * @summary Reply to a comment
  */
 export const ReplyToCommentParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const ReplyToCommentBody = zod.object({
@@ -427,7 +427,7 @@ export const ReplyToCommentBody = zod.object({
 })
 
 export const ReplyToCommentResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "postId": zod.int().nullish(),
   "authorName": zod.string(),
   "authorAvatar": zod.string().nullish(),
@@ -444,7 +444,7 @@ export const ReplyToCommentResponse = zod.object({
  * @summary Update comment status (resolve, escalate, spam)
  */
 export const UpdateCommentStatusParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const UpdateCommentStatusBody = zod.object({
@@ -452,7 +452,7 @@ export const UpdateCommentStatusBody = zod.object({
 })
 
 export const UpdateCommentStatusResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "postId": zod.int().nullish(),
   "authorName": zod.string(),
   "authorAvatar": zod.string().nullish(),
@@ -469,7 +469,7 @@ export const UpdateCommentStatusResponse = zod.object({
  * @summary Get brand settings
  */
 export const GetBrandResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "name": zod.string(),
   "description": zod.string().nullish(),
   "mission": zod.string().nullish(),
@@ -501,7 +501,7 @@ export const UpdateBrandBody = zod.object({
 })
 
 export const UpdateBrandResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "name": zod.string(),
   "description": zod.string().nullish(),
   "mission": zod.string().nullish(),
@@ -520,7 +520,7 @@ export const UpdateBrandResponse = zod.object({
  * @summary List knowledge base items
  */
 export const ListKnowledgeResponseItem = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "title": zod.string(),
   "content": zod.string().nullish(),
   "type": zod.enum(['document', 'product', 'faq', 'post_example', 'guideline']),
@@ -541,7 +541,7 @@ export const CreateKnowledgeBody = zod.object({
 })
 
 export const CreateKnowledgeResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "title": zod.string(),
   "content": zod.string().nullish(),
   "type": zod.enum(['document', 'product', 'faq', 'post_example', 'guideline']),
@@ -554,7 +554,7 @@ export const CreateKnowledgeResponse = zod.object({
  * @summary Delete a knowledge item
  */
 export const DeleteKnowledgeParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const DeleteKnowledgeResponse = zod.void()
@@ -564,7 +564,7 @@ export const DeleteKnowledgeResponse = zod.void()
  * @summary List team members
  */
 export const ListTeamResponseItem = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "email": zod.string(),
   "name": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
@@ -584,7 +584,7 @@ export const InviteTeamMemberBody = zod.object({
 })
 
 export const InviteTeamMemberResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "email": zod.string(),
   "name": zod.string().nullish(),
   "avatarUrl": zod.string().nullish(),
@@ -598,7 +598,7 @@ export const InviteTeamMemberResponse = zod.object({
  * @summary Remove a team member
  */
 export const RemoveTeamMemberParams = zod.object({
-  "id": zod.coerce.number().int()
+  "id": zod.coerce.number()
 })
 
 export const RemoveTeamMemberResponse = zod.void()
@@ -608,13 +608,13 @@ export const RemoveTeamMemberResponse = zod.void()
  * @summary Get dashboard overview summary cards
  */
 export const GetDashboardSummaryResponse = zod.object({
-  "totalPosts": zod.int(),
-  "scheduledPosts": zod.int(),
-  "publishedToday": zod.int(),
-  "pendingComments": zod.int(),
-  "totalReach": zod.int(),
+  "totalPosts": zod.number(),
+  "scheduledPosts": zod.number(),
+  "publishedToday": zod.number(),
+  "pendingComments": zod.number(),
+  "totalReach": zod.number(),
   "engagementRate": zod.number(),
-  "followerCount": zod.int().optional(),
+  "followerCount": zod.number().optional(),
   "followerGrowth": zod.number().optional()
 })
 
@@ -623,11 +623,11 @@ export const GetDashboardSummaryResponse = zod.object({
  * @summary Get recent activity feed
  */
 export const GetDashboardActivityQueryParams = zod.object({
-  "limit": zod.coerce.number().int().optional()
+  "limit": zod.coerce.number().optional()
 })
 
 export const GetDashboardActivityResponseItem = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "type": zod.enum(['post_published', 'comment_received', 'reply_sent', 'schedule_created', 'brand_updated', 'member_invited']),
   "description": zod.string(),
   "platform": zod.string().nullish(),
@@ -640,7 +640,7 @@ export const GetDashboardActivityResponse = zod.array(GetDashboardActivityRespon
  * @summary Get top performing posts
  */
 export const GetDashboardTopPostsResponseItem = zod.object({
-  "id": zod.int(),
+  "id": zod.number(),
   "content": zod.string(),
   "caption": zod.string().nullish(),
   "hashtags": zod.string().nullish(),
