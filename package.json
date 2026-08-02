@@ -5,6 +5,7 @@
   "scripts": {
     "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
     "dev:api": "pnpm --filter @workspace/api-server run dev",
+    "dev:api-render": "pnpm --filter @workspace/api-server run dev-render",
     "dev:frontend": "pnpm --filter @workspace/frontend run dev",
     "codegen": "pnpm --filter @workspace/api-spec run codegen",
     "db:gen": "pnpm --filter @workspace/db run generate",
@@ -17,7 +18,11 @@
   },
   "private": true,
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260801.1",
     "prettier": "^3.9.6",
     "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "wrangler": "^4.118.0"
   }
 }

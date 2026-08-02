@@ -8,6 +8,13 @@
       "when": 1785682951216,
       "tag": "0000_good_scalphunter",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785686904798,
+      "tag": "0001_pretty_gorgon",
+      "breakpoints": true
     }
   ]
 }

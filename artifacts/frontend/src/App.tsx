@@ -3,30 +3,41 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
+import { Layout } from '@/components/layout';
+
+// Import our newly created page
+import KnowledgeBase from '@/pages/knowledge-base';
 
 const queryClient = new QueryClient();
 
-function Home() {
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Building...
-        </h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Your app will appear here once it's ready.
-        </p>
-      </div>
+// A generic placeholder component for pages we haven't built yet
+const ModulePlaceholder = ({ title, description }: { title: string, description: string }) => (
+  <div className="flex h-full min-h-[60vh] flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-background/50">
+    <div className="flex flex-col items-center text-center max-w-md space-y-2">
+      <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
+      <p className="text-sm text-muted-foreground">{description}</p>
     </div>
-  );
-}
+  </div>
+);
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route component={NotFound} />
-    </Switch>
+    <Layout>
+      <Switch>
+        <Route path="/" component={() => <ModulePlaceholder title="Dashboard" description="System overview and daily metrics." />} />
+        <Route path="/chat" component={() => <ModulePlaceholder title="AI Chat" description="Interact with your Brand AI directly." />} />
+        <Route path="/generate" component={() => <ModulePlaceholder title="Content Studio" description="Generate posts, threads, and captions." />} />
+        <Route path="/calendar" component={() => <ModulePlaceholder title="Scheduler" description="Drag-and-drop calendar for content planning." />} />
+        <Route path="/analytics" component={() => <ModulePlaceholder title="Analytics" description="Track reach, engagement, and audience growth." />} />
+        <Route path="/inbox" component={() => <ModulePlaceholder title="Inbox" description="Manage comments, DMs, and auto-replies." />} />
+        
+        {/* Wire up the actual Knowledge Base route */}
+        <Route path="/knowledge" component={KnowledgeBase} />
+        
+        <Route path="/settings" component={() => <ModulePlaceholder title="Brand Settings" description="Configure workspaces, integrations, and billing." />} />
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   );
 }
 

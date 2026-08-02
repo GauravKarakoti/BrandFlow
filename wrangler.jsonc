@@ -1,0 +1,11 @@
+{
+  "name": "brandflow-b2-cache",
+  "main": "lib/worker.ts",
+  "compatibility_date": "2024-02-28",
+  "vars": {
+    "B2_REGION": "us-east-005",
+    "B2_ENDPOINT": "s3.us-east-005.backblazeb2.com",
+    "BUCKET_NAME": "BrandFlow",
+    "ALLOWED_ORIGIN": "*"
+  }
+}
