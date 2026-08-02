@@ -5,7 +5,8 @@
  * BrandFlow API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { GeneratedPost } from './generatedPost';
 
-export interface HealthStatus {
-  status: string;
+export interface GenerateResult {
+  variations: GeneratedPost[];
 }

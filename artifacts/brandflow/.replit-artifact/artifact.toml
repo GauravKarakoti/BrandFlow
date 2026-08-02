@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "BrandFlow"
+description = "BrandFlow is an AI-powered social media SaaS platform that acts as an autonomous marketing assistant. It handles content generation, scheduling, engagement monitoring, auto-replies, and analytics — all in the company's brand voice. Targeted at marketing teams and businesses managing multiple social platforms."
+version = "1.0.0"
+id = "artifacts/brandflow"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19811
+
+[services.development]
+run = "pnpm --filter @workspace/brandflow run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/brandflow", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/brandflow/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19811"
+BASE_PATH = "/"

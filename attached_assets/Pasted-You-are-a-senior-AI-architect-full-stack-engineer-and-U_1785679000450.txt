@@ -1,0 +1,372 @@
+You are a senior AI architect, full-stack engineer, and UI/UX designer.
+
+Build a production-ready AI-powered SaaS platform called **BrandFlow**.
+
+# Product Name
+BrandFlow
+
+# Tagline
+Create. Schedule. Engage. Grow.
+
+# Product Overview
+
+BrandFlow is an AI-powered social media manager that acts as a company's autonomous marketing assistant. Instead of simply generating content, it manages the complete social media workflow from content creation to audience engagement.
+
+The platform should feel modern, premium, and AI-first.
+
+==================================
+MAIN FEATURES
+==================================
+
+1. AI Content Generation
+- Generate social media posts
+- Generate captions
+- Generate hashtags
+- Generate CTA
+- Generate emojis intelligently
+- Generate multiple variations
+- Rewrite existing posts
+- Support multiple tones:
+  - Professional
+  - Funny
+  - Casual
+  - Luxury
+  - Startup
+  - Corporate
+- Support multiple platforms:
+  - X
+  - LinkedIn
+  - Instagram
+  - Facebook
+
+----------------------------------
+
+2. Brand Knowledge
+
+Allow users to upload:
+
+- Brand description
+- Mission
+- Vision
+- Products
+- Website
+- Documents
+- PDFs
+- Logos
+- Brand colors
+- Tone of voice
+- Previous social posts
+
+Store everything in a vector database so the AI always writes in the company's voice.
+
+----------------------------------
+
+3. AI Scheduler
+
+Allow users to
+
+- Create posts
+- Schedule posts
+- Auto schedule
+- Queue posts
+- Calendar view
+- Weekly planner
+- Monthly planner
+
+Use engagement history to recommend the best posting time.
+
+----------------------------------
+
+4. AI Engagement Agent
+
+Monitor
+
+- Likes
+- Shares
+- Comments
+- Mentions
+- Followers
+- Reach
+- Engagement Rate
+
+Detect trends automatically.
+
+----------------------------------
+
+5. AI Auto Reply
+
+Generate replies in brand voice.
+
+Capabilities:
+
+- Reply to comments
+- Reply to DMs
+- Reply to FAQs
+- Escalate difficult conversations
+- Detect spam
+- Detect hate speech
+- Human approval mode
+
+----------------------------------
+
+6. Analytics Dashboard
+
+Show
+
+Daily engagement
+
+Follower growth
+
+Reach
+
+Impressions
+
+Best performing posts
+
+Worst performing posts
+
+Platform comparison
+
+AI recommendations
+
+Trend analysis
+
+Heatmaps
+
+Charts
+
+==================================
+AI AGENTS
+==================================
+
+Create a multi-agent architecture.
+
+Agent 1
+Content Creator
+
+Agent 2
+Hashtag Optimizer
+
+Agent 3
+Scheduler
+
+Agent 4
+Comment Analyzer
+
+Agent 5
+Auto Reply Agent
+
+Agent 6
+Analytics Agent
+
+Agent 7
+Brand Knowledge Agent
+
+Agent 8
+Trend Detection Agent
+
+==================================
+TECH STACK
+==================================
+
+Frontend
+
+Next.js 15
+
+React 19
+
+TypeScript
+
+Tailwind CSS
+
+shadcn/ui
+
+Framer Motion
+
+Backend
+
+FastAPI
+
+Python
+
+Node.js
+
+AI
+
+Gemini API
+
+LangGraph
+
+LangChain
+
+RAG
+
+Embeddings
+
+Database
+
+PostgreSQL
+
+Redis
+
+Vector Database
+
+Pinecone
+
+Authentication
+
+JWT
+
+Google Login
+
+GitHub Login
+
+Storage
+
+Cloudinary
+
+Deployment
+
+Docker
+
+Kubernetes
+
+Vercel
+
+AWS
+
+==================================
+UI DESIGN
+==================================
+
+Create an Apple + Linear + Notion inspired UI.
+
+Theme
+
+White
+
+Black
+
+Purple accent
+
+Rounded cards
+
+Smooth animations
+
+Glassmorphism
+
+Responsive
+
+Minimal
+
+Dashboard should include
+
+Sidebar
+
+Top navbar
+
+Overview cards
+
+Recent posts
+
+Calendar
+
+Analytics graphs
+
+Activity feed
+
+AI chat assistant
+
+==================================
+PAGES
+==================================
+
+Landing Page
+
+Pricing
+
+Dashboard
+
+AI Chat
+
+Content Generator
+
+Calendar
+
+Analytics
+
+Comments
+
+Inbox
+
+Brand Settings
+
+Knowledge Base
+
+Team Management
+
+Billing
+
+User Profile
+
+==================================
+LANDING PAGE
+==================================
+
+Hero section
+
+Features
+
+How it Works
+
+Testimonials
+
+Pricing
+
+FAQ
+
+CTA
+
+Footer
+
+==================================
+OUTPUT
+==================================
+
+Generate:
+
+1. Complete project architecture
+
+2. Folder structure
+
+3. Database schema
+
+4. API architecture
+
+5. Multi-agent architecture
+
+6. UI wireframes
+
+7. Full frontend code
+
+8. Full backend code
+
+9. Authentication
+
+10. AI workflows
+
+11. Database models
+
+12. Responsive UI
+
+13. Deployment guide
+
+14. Docker configuration
+
+15. README
+
+16. Production-ready code
+
+Write clean, scalable, modular code following best practices with proper comments and documentation.
+
+The application should be capable of serving thousands of businesses simultaneously as a multi-tenant SaaS platform.

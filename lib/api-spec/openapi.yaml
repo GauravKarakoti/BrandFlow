@@ -3,13 +3,32 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: BrandFlow API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: posts
+    description: Social media posts
+  - name: schedules
+    description: Post scheduling
+  - name: ai
+    description: AI generation
+  - name: analytics
+    description: Analytics and metrics
+  - name: comments
+    description: Comments and engagement
+  - name: brand
+    description: Brand settings
+  - name: knowledge
+    description: Knowledge base
+  - name: team
+    description: Team management
+  - name: dashboard
+    description: Dashboard summaries
+
 paths:
   /healthz:
     get:
@@ -24,6 +43,581 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ─── Posts ───────────────────────────────────────────────────────────────
+  /posts:
+    get:
+      operationId: listPosts
+      tags: [posts]
+      summary: List all posts
+      parameters:
+        - name: platform
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: number
+        - name: offset
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+    post:
+      operationId: createPost
+      tags: [posts]
+      summary: Create a new post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+
+  /posts/{id}:
+    get:
+      operationId: getPost
+      tags: [posts]
+      summary: Get post by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "404":
+          description: Not found
+    patch:
+      operationId: updatePost
+      tags: [posts]
+      summary: Update a post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+    delete:
+      operationId: deletePost
+      tags: [posts]
+      summary: Delete a post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Schedules ────────────────────────────────────────────────────────────
+  /schedules:
+    get:
+      operationId: listSchedules
+      tags: [schedules]
+      summary: List scheduled posts
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+        - name: to
+          in: query
+          schema:
+            type: string
+        - name: platform
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of schedules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+    post:
+      operationId: createSchedule
+      tags: [schedules]
+      summary: Schedule a post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+
+  /schedules/{id}:
+    patch:
+      operationId: updateSchedule
+      tags: [schedules]
+      summary: Update a schedule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+    delete:
+      operationId: deleteSchedule
+      tags: [schedules]
+      summary: Delete a schedule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── AI Generation ────────────────────────────────────────────────────────
+  /ai/generate:
+    post:
+      operationId: generateContent
+      tags: [ai]
+      summary: Generate social media post content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateRequest"
+      responses:
+        "200":
+          description: Generated content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateResult"
+
+  /ai/hashtags:
+    post:
+      operationId: generateHashtags
+      tags: [ai]
+      summary: Generate hashtags for a post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HashtagRequest"
+      responses:
+        "200":
+          description: Generated hashtags
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HashtagResult"
+
+  /ai/reply:
+    post:
+      operationId: generateReply
+      tags: [ai]
+      summary: Generate an auto-reply in brand voice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReplyRequest"
+      responses:
+        "200":
+          description: Generated reply
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReplyResult"
+
+  /ai/chat:
+    post:
+      operationId: aiChat
+      tags: [ai]
+      summary: Chat with the AI assistant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResult"
+
+  # ─── Analytics ────────────────────────────────────────────────────────────
+  /analytics/overview:
+    get:
+      operationId: getAnalyticsOverview
+      tags: [analytics]
+      summary: Get high-level analytics overview
+      responses:
+        "200":
+          description: Overview stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsOverview"
+
+  /analytics/platforms:
+    get:
+      operationId: getAnalyticsByPlatform
+      tags: [analytics]
+      summary: Get analytics broken down by platform
+      responses:
+        "200":
+          description: Platform analytics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlatformAnalytics"
+
+  /analytics/trends:
+    get:
+      operationId: getAnalyticsTrends
+      tags: [analytics]
+      summary: Get engagement trend data over time
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Trend data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrendDataPoint"
+
+  # ─── Comments ─────────────────────────────────────────────────────────────
+  /comments:
+    get:
+      operationId: listComments
+      tags: [comments]
+      summary: List comments and mentions
+      parameters:
+        - name: platform
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+
+  /comments/{id}/reply:
+    post:
+      operationId: replyToComment
+      tags: [comments]
+      summary: Reply to a comment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentReplyInput"
+      responses:
+        "200":
+          description: Reply sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+
+  /comments/{id}/status:
+    patch:
+      operationId: updateCommentStatus
+      tags: [comments]
+      summary: Update comment status (resolve, escalate, spam)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentStatusUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+
+  # ─── Brand ───────────────────────────────────────────────────────────────
+  /brand:
+    get:
+      operationId: getBrand
+      tags: [brand]
+      summary: Get brand settings
+      responses:
+        "200":
+          description: Brand settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Brand"
+    put:
+      operationId: updateBrand
+      tags: [brand]
+      summary: Update brand settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrandUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Brand"
+
+  # ─── Knowledge Base ───────────────────────────────────────────────────────
+  /knowledge:
+    get:
+      operationId: listKnowledge
+      tags: [knowledge]
+      summary: List knowledge base items
+      responses:
+        "200":
+          description: Knowledge items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KnowledgeItem"
+    post:
+      operationId: createKnowledge
+      tags: [knowledge]
+      summary: Add a knowledge base item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KnowledgeInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeItem"
+
+  /knowledge/{id}:
+    delete:
+      operationId: deleteKnowledge
+      tags: [knowledge]
+      summary: Delete a knowledge item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Team ─────────────────────────────────────────────────────────────────
+  /team:
+    get:
+      operationId: listTeam
+      tags: [team]
+      summary: List team members
+      responses:
+        "200":
+          description: Team members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamMember"
+
+  /team/invite:
+    post:
+      operationId: inviteTeamMember
+      tags: [team]
+      summary: Invite a team member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamInviteInput"
+      responses:
+        "201":
+          description: Invited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamMember"
+
+  /team/{id}:
+    delete:
+      operationId: removeTeamMember
+      tags: [team]
+      summary: Remove a team member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Removed
+
+  # ─── Dashboard summaries (wow endpoints) ──────────────────────────────────
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard overview summary cards
+      responses:
+        "200":
+          description: Summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/activity:
+    get:
+      operationId: getDashboardActivity
+      tags: [dashboard]
+      summary: Get recent activity feed
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Activity feed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+
+  /dashboard/top-posts:
+    get:
+      operationId: getDashboardTopPosts
+      tags: [dashboard]
+      summary: Get top performing posts
+      responses:
+        "200":
+          description: Top posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +628,473 @@ components:
       required:
         - status
 
+    # ─── Post ───────────────────────────────────────────────────────────────
+    Post:
+      type: object
+      required: [id, content, platform, status, createdAt]
+      properties:
+        id:
+          type: number
+        content:
+          type: string
+        caption:
+          type: ["string", "null"]
+        hashtags:
+          type: ["string", "null"]
+        platform:
+          type: string
+          enum: [twitter, linkedin, instagram, facebook]
+        status:
+          type: string
+          enum: [draft, scheduled, published, failed]
+        tone:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        engagementScore:
+          type: ["integer", "null"]
+        likes:
+          type: ["integer", "null"]
+        shares:
+          type: ["integer", "null"]
+        comments:
+          type: ["integer", "null"]
+        reach:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+        scheduledAt:
+          type: ["string", "null"]
+        publishedAt:
+          type: ["string", "null"]
+
+    PostInput:
+      type: object
+      required: [content, platform]
+      properties:
+        content:
+          type: string
+        caption:
+          type: string
+        hashtags:
+          type: string
+        platform:
+          type: string
+          enum: [twitter, linkedin, instagram, facebook]
+        tone:
+          type: string
+        imageUrl:
+          type: string
+        scheduledAt:
+          type: string
+
+    PostUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+        caption:
+          type: string
+        hashtags:
+          type: string
+        platform:
+          type: string
+        tone:
+          type: string
+        status:
+          type: string
+        imageUrl:
+          type: string
+        scheduledAt:
+          type: string
+
+    # ─── Schedule ────────────────────────────────────────────────────────────
+    Schedule:
+      type: object
+      required: [id, postId, scheduledAt, platform, status, createdAt]
+      properties:
+        id:
+          type: number
+        postId:
+          type: number
+        scheduledAt:
+          type: string
+        platform:
+          type: string
+        status:
+          type: string
+          enum: [pending, sent, failed, cancelled]
+        createdAt:
+          type: string
+        post:
+          $ref: "#/components/schemas/Post"
+
+    ScheduleInput:
+      type: object
+      required: [postId, scheduledAt, platform]
+      properties:
+        postId:
+          type: number
+        scheduledAt:
+          type: string
+        platform:
+          type: string
+
+    ScheduleUpdate:
+      type: object
+      properties:
+        scheduledAt:
+          type: string
+        status:
+          type: string
+
+    # ─── AI ──────────────────────────────────────────────────────────────────
+    GenerateRequest:
+      type: object
+      required: [topic, platform]
+      properties:
+        topic:
+          type: string
+        platform:
+          type: string
+          enum: [twitter, linkedin, instagram, facebook]
+        tone:
+          type: string
+          enum: [professional, funny, casual, luxury, startup, corporate]
+        includeHashtags:
+          type: boolean
+        includeEmojis:
+          type: boolean
+        variations:
+          type: number
+
+    GenerateResult:
+      type: object
+      required: [variations]
+      properties:
+        variations:
+          type: array
+          items:
+            $ref: "#/components/schemas/GeneratedPost"
+
+    GeneratedPost:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+        hashtags:
+          type: string
+        cta:
+          type: string
+
+    HashtagRequest:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+        platform:
+          type: string
+        count:
+          type: number
+
+    HashtagResult:
+      type: object
+      required: [hashtags]
+      properties:
+        hashtags:
+          type: array
+          items:
+            type: string
+
+    ReplyRequest:
+      type: object
+      required: [commentText, platform]
+      properties:
+        commentText:
+          type: string
+        platform:
+          type: string
+        context:
+          type: string
+
+    ReplyResult:
+      type: object
+      required: [reply]
+      properties:
+        reply:
+          type: string
+        sentiment:
+          type: string
+
+    ChatRequest:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        conversationId:
+          type: ["string", "null"]
+
+    ChatResult:
+      type: object
+      required: [response]
+      properties:
+        response:
+          type: string
+        conversationId:
+          type: string
+
+    # ─── Analytics ───────────────────────────────────────────────────────────
+    AnalyticsOverview:
+      type: object
+      required: [totalPosts, totalReach, totalEngagement, followerCount, engagementRate, impressions]
+      properties:
+        totalPosts:
+          type: number
+        totalReach:
+          type: number
+        totalEngagement:
+          type: number
+        followerCount:
+          type: number
+        engagementRate:
+          type: number
+        impressions:
+          type: number
+        postsThisWeek:
+          type: number
+        growthPercent:
+          type: number
+
+    PlatformAnalytics:
+      type: object
+      required: [platform, posts, reach, engagement, followers]
+      properties:
+        platform:
+          type: string
+        posts:
+          type: number
+        reach:
+          type: number
+        engagement:
+          type: number
+        followers:
+          type: number
+        engagementRate:
+          type: number
+
+    TrendDataPoint:
+      type: object
+      required: [date, engagement, reach, impressions]
+      properties:
+        date:
+          type: string
+        engagement:
+          type: number
+        reach:
+          type: number
+        impressions:
+          type: number
+        followers:
+          type: number
+
+    # ─── Comments ────────────────────────────────────────────────────────────
+    Comment:
+      type: object
+      required: [id, authorName, content, platform, status, createdAt]
+      properties:
+        id:
+          type: number
+        postId:
+          type: ["integer", "null"]
+        authorName:
+          type: string
+        authorAvatar:
+          type: ["string", "null"]
+        content:
+          type: string
+        platform:
+          type: string
+        status:
+          type: string
+          enum: [pending, replied, resolved, escalated, spam]
+        sentiment:
+          type: ["string", "null"]
+        reply:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    CommentReplyInput:
+      type: object
+      required: [reply]
+      properties:
+        reply:
+          type: string
+
+    CommentStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [pending, replied, resolved, escalated, spam]
+
+    # ─── Brand ───────────────────────────────────────────────────────────────
+    Brand:
+      type: object
+      required: [id, name, createdAt]
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        mission:
+          type: ["string", "null"]
+        vision:
+          type: ["string", "null"]
+        toneOfVoice:
+          type: ["string", "null"]
+        primaryColor:
+          type: ["string", "null"]
+        secondaryColor:
+          type: ["string", "null"]
+        logoUrl:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        industry:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    BrandUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        mission:
+          type: string
+        vision:
+          type: string
+        toneOfVoice:
+          type: string
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        logoUrl:
+          type: string
+        website:
+          type: string
+        industry:
+          type: string
+
+    # ─── Knowledge ───────────────────────────────────────────────────────────
+    KnowledgeItem:
+      type: object
+      required: [id, title, type, createdAt]
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        content:
+          type: ["string", "null"]
+        type:
+          type: string
+          enum: [document, product, faq, post_example, guideline]
+        fileUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    KnowledgeInput:
+      type: object
+      required: [title, type]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        type:
+          type: string
+          enum: [document, product, faq, post_example, guideline]
+        fileUrl:
+          type: string
+
+    # ─── Team ────────────────────────────────────────────────────────────────
+    TeamMember:
+      type: object
+      required: [id, email, role, status, createdAt]
+      properties:
+        id:
+          type: number
+        email:
+          type: string
+        name:
+          type: ["string", "null"]
+        avatarUrl:
+          type: ["string", "null"]
+        role:
+          type: string
+          enum: [owner, admin, editor, viewer]
+        status:
+          type: string
+          enum: [active, invited, inactive]
+        createdAt:
+          type: string
+
+    TeamInviteInput:
+      type: object
+      required: [email, role]
+      properties:
+        email:
+          type: string
+        role:
+          type: string
+          enum: [admin, editor, viewer]
+
+    # ─── Dashboard ───────────────────────────────────────────────────────────
+    DashboardSummary:
+      type: object
+      required: [totalPosts, scheduledPosts, publishedToday, pendingComments, totalReach, engagementRate]
+      properties:
+        totalPosts:
+          type: number
+        scheduledPosts:
+          type: number
+        publishedToday:
+          type: number
+        pendingComments:
+          type: number
+        totalReach:
+          type: number
+        engagementRate:
+          type: number
+        followerCount:
+          type: number
+        followerGrowth:
+          type: number
+
+    ActivityItem:
+      type: object
+      required: [id, type, description, createdAt]
+      properties:
+        id:
+          type: number
+        type:
+          type: string
+          enum: [post_published, comment_received, reply_sent, schedule_created, brand_updated, member_invited]
+        description:
+          type: string
+        platform:
+          type: ["string", "null"]
+        createdAt:
+          type: string
