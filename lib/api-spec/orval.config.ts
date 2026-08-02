@@ -57,6 +57,7 @@ export default defineConfig({
       formatter: "prettier",
       override: {
         zod: {
+          version: 3, // <--- Add this line to force Zod 3 syntax
           coerce: {
             query: ['boolean', 'number', 'string'],
             param: ['boolean', 'number', 'string'],
