@@ -1,0 +1,3 @@
+- README Update krni h
+- index.html me metadata daalna h
+- App.tsx update krna h
