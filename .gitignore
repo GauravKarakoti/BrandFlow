@@ -38,6 +38,7 @@ testem.log
 /typings
 .env
 generated
+.generated
 
 # System Files
 .DS_Store
