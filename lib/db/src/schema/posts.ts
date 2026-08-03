@@ -1,15 +1,19 @@
-// Each model/table should ideally be split into different files.
-// Each model/table should define a Drizzle table, insert schema, and types:
+import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
-import { pgTable, text, serial } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod/v4";
-
-export const postsTable = pgTable("posts", {
-id: serial("id").primaryKey(),
-title: text("title").notNull(),
+export const posts = pgTable("posts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  platform: varchar("platform", { length: 50 }).notNull(),
+  content: text("content").notNull(),
+  
+  // Status can be: 'draft', 'scheduled', or 'published'
+  status: varchar("status", { length: 20 }).notNull().default('draft'),
+  
+  // Null if it's just a draft
+  scheduledAt: timestamp("scheduled_at"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const insertPostSchema = createInsertSchema(postsTable).omit({ id: true });
-export type InsertPost = z.infer<typeof insertPostSchema>;
-export type Post = typeof postsTable.$inferSelect;
+export type Post = typeof posts.$inferSelect;
+export type NewPost = typeof posts.$inferInsert;

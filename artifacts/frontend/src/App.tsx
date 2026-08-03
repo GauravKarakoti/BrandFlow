@@ -5,12 +5,13 @@ import NotFound from '@/pages/not-found';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { Layout } from '@/components/layout';
 
-// Import our newly created page
+// Page Imports
 import KnowledgeBase from '@/pages/knowledge-base';
+import ContentGenerator from '@/pages/content-generator';
+import Calendar from './pages/calendar';
 
 const queryClient = new QueryClient();
 
-// A generic placeholder component for pages we haven't built yet
 const ModulePlaceholder = ({ title, description }: { title: string, description: string }) => (
   <div className="flex h-full min-h-[60vh] flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-background/50">
     <div className="flex flex-col items-center text-center max-w-md space-y-2">
@@ -26,14 +27,14 @@ function Router() {
       <Switch>
         <Route path="/" component={() => <ModulePlaceholder title="Dashboard" description="System overview and daily metrics." />} />
         <Route path="/chat" component={() => <ModulePlaceholder title="AI Chat" description="Interact with your Brand AI directly." />} />
-        <Route path="/generate" component={() => <ModulePlaceholder title="Content Studio" description="Generate posts, threads, and captions." />} />
-        <Route path="/calendar" component={() => <ModulePlaceholder title="Scheduler" description="Drag-and-drop calendar for content planning." />} />
+        
+        {/* Wired Content Studio Route */}
+        <Route path="/generate" component={ContentGenerator} />
+        
+        <Route path="/calendar" component={Calendar} />
         <Route path="/analytics" component={() => <ModulePlaceholder title="Analytics" description="Track reach, engagement, and audience growth." />} />
         <Route path="/inbox" component={() => <ModulePlaceholder title="Inbox" description="Manage comments, DMs, and auto-replies." />} />
-        
-        {/* Wire up the actual Knowledge Base route */}
         <Route path="/knowledge" component={KnowledgeBase} />
-        
         <Route path="/settings" component={() => <ModulePlaceholder title="Brand Settings" description="Configure workspaces, integrations, and billing." />} />
         <Route component={NotFound} />
       </Switch>

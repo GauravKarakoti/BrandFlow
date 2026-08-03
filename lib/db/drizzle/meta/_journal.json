@@ -15,6 +15,13 @@
       "when": 1785686904798,
       "tag": "0001_pretty_gorgon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785781000454,
+      "tag": "0002_flawless_black_widow",
+      "breakpoints": true
     }
   ]
 }
