@@ -19,6 +19,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Sparkles, 
@@ -35,6 +44,7 @@ import {
   Bookmark
 } from "lucide-react";
 import { BACKEND_URL } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 // Platform options supported by BrandFlow
 const PLATFORMS = [
@@ -55,13 +65,13 @@ const TONES = [
 
 const FORMATS = [
   "Single Post",
-  "Thread / Multi-part",
   "Caption & Hashtags",
   "Hook & Call to Action"
 ];
 
 export default function ContentGenerator() {
   const { toast } = useToast();
+  const { authFetch } = useAuth();
 
   // Generator Controls State
   const [prompt, setPrompt] = React.useState("");
@@ -83,10 +93,17 @@ export default function ContentGenerator() {
     characterCount: number;
   }>>([]);
 
+  // Action Tracking State (Prevents duplicate saves and handles draft -> scheduled transitions)
+  const [postStatuses, setPostStatuses] = React.useState<Record<string, 'draft' | 'scheduled'>>({});
+
+  // Scheduling State (Now tracks ID as well)
+  const [schedulingPost, setSchedulingPost] = React.useState<{id: string, platform: string, content: string} | null>(null);
+  const [scheduleDate, setScheduleDate] = React.useState("");
+
   // --- AI Generation Mutation ---
   const generateMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const res = await fetch(`${BACKEND_URL}/api/generate/content`, {
+      const res = await authFetch(`${BACKEND_URL}/api/generate/content`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -99,7 +116,6 @@ export default function ContentGenerator() {
       return res.json();
     },
     onSuccess: (data) => {
-      // Update UI with the AI-generated results
       setVariations(data.variations);
       toast({
         title: "Content generated!",
@@ -115,9 +131,10 @@ export default function ContentGenerator() {
     }
   });
 
+  // --- Save Post Mutation (Handles both Drafts and Scheduling) ---
   const savePostMutation = useMutation({
-    mutationFn: async (payload: { platform: string, content: string, status: string }) => {
-      const res = await fetch(`${BACKEND_URL}/api/posts`, {
+    mutationFn: async (payload: { platform: string, content: string, status: string, scheduledAt?: string }) => {
+      const res = await authFetch(`${BACKEND_URL}/api/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -125,13 +142,38 @@ export default function ContentGenerator() {
       if (!res.ok) throw new Error("Failed to save post");
       return res.json();
     },
-    onSuccess: () => {
-      toast({ title: "Draft Saved", description: "You can view it in the Planner." });
+    onSuccess: (_, variables) => {
+      toast({ 
+        title: variables.status === 'scheduled' ? "Post Scheduled!" : "Draft Saved", 
+        description: "You can view it in the Planner." 
+      });
     }
   });
 
-  const handleSaveDraft = (platform: string, content: string) => {
+  const handleSaveDraft = (id: string, platform: string, content: string) => {
     savePostMutation.mutate({ platform, content, status: 'draft' });
+    setPostStatuses((prev) => ({ ...prev, [id]: 'draft' }));
+  };
+
+  const handleConfirmSchedule = () => {
+    if (!scheduleDate || !schedulingPost) {
+      toast({ title: "Select a date", description: "Please pick a date and time to schedule.", variant: "destructive" });
+      return;
+    }
+    
+    savePostMutation.mutate({ 
+      platform: schedulingPost.platform, 
+      content: schedulingPost.content, 
+      status: 'scheduled',
+      scheduledAt: new Date(scheduleDate).toISOString()
+    });
+    
+    // Mark as scheduled in local state, overriding draft if it was one
+    setPostStatuses((prev) => ({ ...prev, [schedulingPost.id]: 'scheduled' }));
+
+    // Close the dialog and clear the form
+    setSchedulingPost(null);
+    setScheduleDate("");
   };
 
   const togglePlatform = (id: string) => {
@@ -163,7 +205,6 @@ export default function ContentGenerator() {
       return;
     }
 
-    // Trigger the actual backend call
     generateMutation.mutate({
       prompt,
       platforms: selectedPlatforms,
@@ -342,12 +383,16 @@ export default function ContentGenerator() {
               </div>
 
               {variations.map((v) => {
-                // Determine icon based on backend's formatted platform string
                 const PlatformMeta = PLATFORMS.find((p) => 
                   p.id.toLowerCase() === v.platform.toLowerCase() || 
                   p.name.toLowerCase().includes(v.platform.toLowerCase())
                 );
                 const Icon = PlatformMeta?.icon || Share2;
+                
+                // Track button statuses locally
+                const currentStatus = postStatuses[v.id];
+                const isDraft = currentStatus === 'draft';
+                const isScheduled = currentStatus === 'scheduled';
 
                 return (
                   <Card key={v.id} className="border-border/60 hover:border-border transition-all">
@@ -383,17 +428,23 @@ export default function ContentGenerator() {
                             variant="outline" 
                             size="sm" 
                             className="gap-2"
-                            onClick={() => handleSaveDraft(v.platform, v.content)}
-                            disabled={savePostMutation.isPending}
+                            onClick={() => handleSaveDraft(v.id, v.platform, v.content)}
+                            // Disable if already saved as a draft OR if it's been scheduled
+                            disabled={isDraft || isScheduled || savePostMutation.isPending}
                           >
-                            <Bookmark className="h-4 w-4" />
-                            Save Draft
+                            {isDraft ? <Check className="h-4 w-4 text-green-500" /> : <Bookmark className="h-4 w-4" />}
+                            {isDraft ? "Saved" : "Save Draft"}
                           </Button>
                         </div>
 
-                        <Button size="sm" className="gap-2 bg-slate-900 dark:bg-slate-100">
-                          <Calendar className="h-4 w-4" />
-                          Schedule Post
+                        <Button 
+                          size="sm" 
+                          className="gap-2 bg-slate-900 dark:bg-slate-100"
+                          onClick={() => setSchedulingPost({ id: v.id, platform: v.platform, content: v.content })}
+                          disabled={isScheduled || savePostMutation.isPending}
+                        >
+                          {isScheduled ? <Check className="h-4 w-4 text-green-500" /> : <Calendar className="h-4 w-4" />}
+                          {isScheduled ? "Scheduled" : "Schedule Post"}
                         </Button>
                       </div>
                     </CardContent>
@@ -404,6 +455,36 @@ export default function ContentGenerator() {
           )}
         </div>
       </div>
+
+      {/* Scheduling Dialog */}
+      <Dialog open={!!schedulingPost} onOpenChange={(open) => !open && setSchedulingPost(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Schedule Post</DialogTitle>
+            <DialogDescription>
+              Select a future date and time to automatically publish this post to {schedulingPost?.platform}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="datetime">Date & Time</Label>
+              <Input 
+                id="datetime"
+                type="datetime-local" 
+                value={scheduleDate}
+                onChange={(e) => setScheduleDate(e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSchedulingPost(null)}>Cancel</Button>
+            <Button onClick={handleConfirmSchedule} disabled={savePostMutation.isPending}>
+              {savePostMutation.isPending ? "Scheduling..." : "Confirm Schedule"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

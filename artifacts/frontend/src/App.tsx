@@ -1,17 +1,23 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import NotFound from '@/pages/not-found';
-import { Route, Switch, Router as WouterRouter } from 'wouter';
+import { Route, Switch, Router as WouterRouter, useLocation } from 'wouter';
 import { Layout } from '@/components/layout';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { Loader2 } from 'lucide-react';
 
-// Page Imports
+// Pages
+import NotFound from '@/pages/not-found';
 import KnowledgeBase from '@/pages/knowledge-base';
 import ContentGenerator from '@/pages/content-generator';
-import Calendar from './pages/calendar';
+import Calendar from '@/pages/calendar';
+import Login from '@/pages/login';
+import Register from '@/pages/register';
+import Settings from './pages/settings';
 
 const queryClient = new QueryClient();
 
+// Placeholder for unbuilt routes
 const ModulePlaceholder = ({ title, description }: { title: string, description: string }) => (
   <div className="flex h-full min-h-[60vh] flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-background/50">
     <div className="flex flex-col items-center text-center max-w-md space-y-2">
@@ -21,24 +27,47 @@ const ModulePlaceholder = ({ title, description }: { title: string, description:
   </div>
 );
 
-function Router() {
+// Protected Route Wrapper
+const ProtectedRoute = ({ component: Component }: { component: React.ElementType }) => {
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+  }
+
+  if (!user) {
+    setLocation("/login");
+    return null;
+  }
+
+  // Wrap authenticated components in the Sidebar Layout
   return (
     <Layout>
-      <Switch>
-        <Route path="/" component={() => <ModulePlaceholder title="Dashboard" description="System overview and daily metrics." />} />
-        <Route path="/chat" component={() => <ModulePlaceholder title="AI Chat" description="Interact with your Brand AI directly." />} />
-        
-        {/* Wired Content Studio Route */}
-        <Route path="/generate" component={ContentGenerator} />
-        
-        <Route path="/calendar" component={Calendar} />
-        <Route path="/analytics" component={() => <ModulePlaceholder title="Analytics" description="Track reach, engagement, and audience growth." />} />
-        <Route path="/inbox" component={() => <ModulePlaceholder title="Inbox" description="Manage comments, DMs, and auto-replies." />} />
-        <Route path="/knowledge" component={KnowledgeBase} />
-        <Route path="/settings" component={() => <ModulePlaceholder title="Brand Settings" description="Configure workspaces, integrations, and billing." />} />
-        <Route component={NotFound} />
-      </Switch>
+      <Component />
     </Layout>
+  );
+};
+
+function Router() {
+  return (
+    <Switch>
+      {/* Public Auth Routes */}
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+
+      {/* Protected App Routes */}
+      <Route path="/" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="Dashboard" description="System overview and daily metrics." />} />} />
+      <Route path="/chat" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="AI Chat" description="Interact with your Brand AI directly." />} />} />
+      <Route path="/generate" component={() => <ProtectedRoute component={ContentGenerator} />} />
+      <Route path="/calendar" component={() => <ProtectedRoute component={Calendar} />} />
+      <Route path="/analytics" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="Analytics" description="Track reach, engagement, and audience growth." />} />} />
+      <Route path="/inbox" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="Inbox" description="Manage comments, DMs, and auto-replies." />} />} />
+      <Route path="/knowledge" component={() => <ProtectedRoute component={KnowledgeBase} />} />
+      <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
+      
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
@@ -47,7 +76,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
+          <AuthProvider>
+            <Router />
+          </AuthProvider>
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

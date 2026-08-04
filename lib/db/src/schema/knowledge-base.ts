@@ -1,4 +1,5 @@
 import { pgTable, text, timestamp, uuid, jsonb } from "drizzle-orm/pg-core";
+import { projects } from "./auth";
 
 export const brandKnowledgeBase = pgTable("brand_knowledge_base", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -16,6 +17,7 @@ export const brandKnowledgeBase = pgTable("brand_knowledge_base", {
   // External Training Sources & Context
   links: jsonb("links").$type<string[]>().default([]),
   documents: jsonb("documents").$type<{ name: string; url: string }[]>().default([]),
+  projectId: uuid("project_id").references(() => projects.id, { onDelete: 'cascade' }).notNull().unique(),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

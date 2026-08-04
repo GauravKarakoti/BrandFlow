@@ -26,6 +26,7 @@ import {
   FileText
 } from "lucide-react";
 import { BACKEND_URL } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 interface DocumentItem {
   name: string;
@@ -35,6 +36,7 @@ interface DocumentItem {
 export default function KnowledgeBase() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { authFetch, activeProjectId } = useAuth();
 
   // Form State
   const [companyDescription, setCompanyDescription] = React.useState("");
@@ -55,9 +57,9 @@ export default function KnowledgeBase() {
   const documentInputRef = React.useRef<HTMLInputElement>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["knowledge-base"],
+    queryKey: ["knowledge-base", activeProjectId],
     queryFn: async () => {
-      const res = await fetch(`${BACKEND_URL}/api/knowledge-base`);
+      const res = await authFetch(`${BACKEND_URL}/api/knowledge-base`);
       if (!res.ok) throw new Error("Failed to fetch knowledge base");
       return res.json();
     }
@@ -79,7 +81,7 @@ export default function KnowledgeBase() {
   // --- MUTATIONS ---
   const saveMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const res = await fetch(`${BACKEND_URL}/api/knowledge-base`, {
+      const res = await authFetch(`${BACKEND_URL}/api/knowledge-base`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -89,7 +91,7 @@ export default function KnowledgeBase() {
     },
     onSuccess: () => {
       toast({ title: "Success", description: "Brand knowledge base updated." });
-      queryClient.invalidateQueries({ queryKey: ["knowledge-base"] });
+      queryClient.invalidateQueries({ queryKey: ["knowledge-base", activeProjectId] });
     },
     onError: (error: any) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -100,7 +102,7 @@ export default function KnowledgeBase() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch(`${BACKEND_URL}/api/upload/logo`, {
+      const res = await authFetch(`${BACKEND_URL}/api/upload/logo`, {
         method: "POST",
         body: formData,
       });
@@ -115,7 +117,7 @@ export default function KnowledgeBase() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch(`${BACKEND_URL}/api/upload/document`, {
+      const res = await authFetch(`${BACKEND_URL}/api/upload/document`, {
         method: "POST",
         body: formData,
       });

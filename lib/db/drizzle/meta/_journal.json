@@ -22,6 +22,27 @@
       "when": 1785781000454,
       "tag": "0002_flawless_black_widow",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785860589655,
+      "tag": "0003_steep_gideon",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785860788362,
+      "tag": "0004_wise_screwball",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785866508821,
+      "tag": "0005_chilly_quicksilver",
+      "breakpoints": true
     }
   ]
 }

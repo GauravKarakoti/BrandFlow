@@ -1,13 +1,14 @@
 import { brandKnowledgeBase, db } from "@workspace/db";
 import { Router } from "express";
 import { Groq } from "groq-sdk";
+import { requireAuth } from "../middleware/auth";
 
 const router = Router();
 
 // Initialize Groq client
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-router.post("/content", async (req, res) => {
+router.post("/content", requireAuth, async (req, res) => {
   try {
     const {
       prompt,
@@ -69,13 +70,13 @@ router.post("/content", async (req, res) => {
 
     const userMessage = `Generate content for the following platforms: ${platforms.join(", ")}.\n\nTopic: ${prompt}`;
 
-    // Call Groq using Llama 3 (excellent for fast, instruction-following tasks)
+    // Call Groq using OpenAI (excellent for fast, instruction-following tasks)
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
-      model: "llama3-70b-8192", // Using the 70b model for high-quality copywriting
+      model: "openai/gpt-oss-120b", // Using the 120b model for high-quality copywriting
       temperature: 0.7,
       response_format: { type: "json_object" }, // Enforce JSON mode
     });
