@@ -12,8 +12,6 @@ import KnowledgeBase from '@/pages/knowledge-base';
 import ContentGenerator from '@/pages/content-generator';
 import Calendar from '@/pages/calendar';
 import Login from '@/pages/login';
-import Register from '@/pages/register';
-import Settings from './pages/settings';
 
 const queryClient = new QueryClient();
 
@@ -54,18 +52,13 @@ function Router() {
     <Switch>
       {/* Public Auth Routes */}
       <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
 
       {/* Protected App Routes */}
       <Route path="/" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="Dashboard" description="System overview and daily metrics." />} />} />
-      <Route path="/chat" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="AI Chat" description="Interact with your Brand AI directly." />} />} />
       <Route path="/generate" component={() => <ProtectedRoute component={ContentGenerator} />} />
       <Route path="/calendar" component={() => <ProtectedRoute component={Calendar} />} />
-      <Route path="/analytics" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="Analytics" description="Track reach, engagement, and audience growth." />} />} />
-      <Route path="/inbox" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="Inbox" description="Manage comments, DMs, and auto-replies." />} />} />
       <Route path="/knowledge" component={() => <ProtectedRoute component={KnowledgeBase} />} />
-      <Route path="/settings" component={() => <ProtectedRoute component={Settings} />} />
-      
+
       <Route component={NotFound} />
     </Switch>
   );

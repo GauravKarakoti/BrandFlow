@@ -1,18 +1,17 @@
-import { brandKnowledgeBase, db } from "@workspace/db";
 import { Router } from "express";
 import { Groq } from "groq-sdk";
 import { requireAuth } from "../middleware/auth";
+import { db } from "@workspace/db";
+import { brandKnowledgeBase } from "@workspace/db/schema";
+import crypto from "crypto";
 
 const router = Router();
-
-// Initialize Groq client
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 router.post("/content", requireAuth, async (req, res) => {
   try {
     const {
       prompt,
-      platforms,
       tone,
       format,
       useBrandVoice,
@@ -20,8 +19,8 @@ router.post("/content", requireAuth, async (req, res) => {
       includeEmojis,
     } = req.body;
 
-    if (!prompt || !platforms || !platforms.length) {
-      return res.status(400).json({ error: "Prompt and at least one platform are required." });
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt is required." });
     }
 
     let brandContext = "";
@@ -43,42 +42,41 @@ router.post("/content", requireAuth, async (req, res) => {
       }
     }
 
-    // Construct the System Prompt
+    // Construct the System Prompt optimized purely for LinkedIn
     const systemPrompt = `
-      You are an expert Social Media Strategist and AI Copywriter.
-      Your task is to write highly engaging, platform-optimized content based on the user's topic.
+      You are an expert B2B Copywriter and LinkedIn Ghostwriter.
+      Your task is to write highly engaging content based on the user's topic.
       
       REQUIREMENTS:
-      - Formatted as: ${format}
-      - Tone: ${tone}
+      - Target Platform: LinkedIn ONLY
+      - Formatted as: ${format || "Standard Post"}
+      - Tone: ${tone || "Professional"}
       - Emojis: ${includeEmojis ? "Use appropriate emojis to enhance readability." : "DO NOT use emojis."}
-      - Hashtags: ${includeHashtags ? "Include 2-4 highly relevant niche hashtags." : "DO NOT use hashtags."}
+      - Hashtags: ${includeHashtags ? "Include 2-4 highly relevant niche hashtags at the very end." : "DO NOT use hashtags."}
       
-      PLATFORM RULES:
-      - X (Twitter): Crisp, engaging, strictly under 280 characters.
-      - LinkedIn: Professional, story-driven, networking-focused. Spaced out paragraphs.
-      - Instagram: Visual-first hook, engaging caption, highly stylized.
-      - Facebook: Conversational, community-focused, encourages comments.
-
       ${brandContext}
       
       OUTPUT FORMAT:
+      Generate 3 distinct, high-quality LinkedIn post options based on the topic:
+      1. Option 1: A story-driven, engaging post with a clear hook.
+      2. Option 2: A highly actionable, listicle-style post (e.g., "3 ways to...").
+      3. Option 3: A concise, punchy, thought-provoking post.
+
       You must respond with a strictly valid JSON object. Do not include markdown code blocks like \`\`\`json. 
-      The JSON object must contain a single key "results" which is an array of objects. 
-      Each object must have "platform" (the platform ID) and "content" (the generated text).
+      The JSON object must contain a single key "results" which is an array of exactly 3 objects. 
+      Each object must have exactly one key: "content" (the generated text string).
     `;
 
-    const userMessage = `Generate content for the following platforms: ${platforms.join(", ")}.\n\nTopic: ${prompt}`;
+    const userMessage = `Topic: ${prompt}`;
 
-    // Call Groq using OpenAI (excellent for fast, instruction-following tasks)
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
-      model: "openai/gpt-oss-120b", // Using the 120b model for high-quality copywriting
+      model: "openai/gpt-oss-120b",
       temperature: 0.7,
-      response_format: { type: "json_object" }, // Enforce JSON mode
+      response_format: { type: "json_object" },
     });
 
     const responseContent = completion.choices[0]?.message?.content;
@@ -87,13 +85,11 @@ router.post("/content", requireAuth, async (req, res) => {
       throw new Error("Empty response received from Groq.");
     }
 
-    // Parse the JSON response
     const parsedData = JSON.parse(responseContent);
 
-    // Map to include character counts and unique IDs for the frontend
+    // Map to include character counts and unique IDs for the frontend selection UI
     const variations = parsedData.results.map((item: any) => ({
       id: crypto.randomUUID(),
-      platform: item.platform.toLowerCase(),
       content: item.content,
       characterCount: item.content.length,
     }));

@@ -1,17 +1,17 @@
 import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
-import { projects } from "./auth";
+import { projects } from "./auth"; // Adjust import path if necessary
 
 export const socialAccounts = pgTable("social_accounts", {
   id: uuid("id").primaryKey().defaultRandom(),
   projectId: uuid("project_id").references(() => projects.id, { onDelete: 'cascade' }).notNull(),
   
-  // e.g., 'x', 'linkedin', 'facebook', 'instagram'
+  // Will exclusively be 'linkedin'
   provider: varchar("provider", { length: 50 }).notNull(), 
   
-  // The unique ID from the provider (e.g., Twitter user ID)
+  // The unique ID from LinkedIn (the 'sub' field)
   providerAccountId: varchar("provider_account_id", { length: 255 }).notNull(),
   
-  // OAuth Tokens
+  // OAuth Tokens used by the node-cron background worker
   accessToken: text("access_token").notNull(),
   refreshToken: text("refresh_token"),
   

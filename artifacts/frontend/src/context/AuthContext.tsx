@@ -23,7 +23,6 @@ interface AuthContextType {
   addProject: (name: string) => Promise<void>;
   checkAuth: () => Promise<void>;
   logout: () => Promise<void>;
-  // A helper fetch wrapper that automatically injects auth cookies and the x-project-id header
   authFetch: (url: string, options?: RequestInit) => Promise<Response>;
 }
 
@@ -54,19 +53,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.ok) throw new Error("Failed to create workspace.");
     
     const newProject = await res.json();
-    setProjects((prev) => [...prev, newProject]); // Add to dropdown
-    setActiveProjectId(newProject.id); // Auto-switch to the new project
+    setProjects((prev) => [...prev, newProject]);
+    setActiveProjectId(newProject.id); 
   };
 
   const checkAuth = async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/auth/me`, { credentials: "include" });
+      // 🚀 FIX: Catch the token from the URL and save it
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get("token");
+      if (urlToken) {
+        localStorage.setItem("access_token", urlToken);
+        // Clean the URL so the token doesn't sit in the address bar
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
+      const token = localStorage.getItem("access_token");
+
+      const res = await fetch(`${BACKEND_URL}/api/auth/me`, { 
+        credentials: "include",
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+          "Authorization": token ? `Bearer ${token}` : "" // Inject token
+        }
+      });
+      
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
         setProjects(data.projects);
         
-        // Auto-select the first project if none is selected or if the selected one isn't valid
         if (data.projects.length > 0 && (!activeProjectId || !data.projects.find((p: Project) => p.id === activeProjectId))) {
           setActiveProjectId(data.projects[0].id);
         }
@@ -75,6 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setProjects([]);
       }
     } catch (error) {
+      console.error("Auth verification failed:", error);
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -82,29 +99,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    await fetch(`${BACKEND_URL}/api/auth/logout`, { method: "POST", credentials: "include" });
+    await fetch(`${BACKEND_URL}/api/auth/logout`, { 
+      method: "POST", 
+      credentials: "include",
+      headers: { "ngrok-skip-browser-warning": "true" }
+    });
     setUser(null);
     setProjects([]);
     setActiveProjectIdState(null);
     localStorage.removeItem("activeProjectId");
+    localStorage.removeItem("access_token"); // Clear token on logout
     setLocation("/login");
   };
 
-  // Custom fetch wrapper to keep your API calls clean in other components
   const authFetch = async (url: string, options: RequestInit = {}) => {
     const headers = new Headers(options.headers || {});
     if (activeProjectId) headers.set("x-project-id", activeProjectId);
-    if (!headers.has("Content-Type")) headers.set("Content-Type", "application/json");
+    
+    // 🚀 FIX: Do NOT force application/json if the body is FormData (file uploads)
+    const isFormData = options.body instanceof FormData;
+    if (!headers.has("Content-Type") && !isFormData) {
+      headers.set("Content-Type", "application/json");
+    }
+    
+    headers.set("ngrok-skip-browser-warning", "true");
+
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
 
     const res = await fetch(url, {
       ...options,
       headers,
-      credentials: "include", // Required to send the secure HTTP-only cookie
+      credentials: "include", 
     });
 
     if (res.status === 401) {
       toast({ title: "Session expired", description: "Please log in again.", variant: "destructive" });
       setUser(null);
+      localStorage.removeItem("access_token");
       setLocation("/login");
     }
 

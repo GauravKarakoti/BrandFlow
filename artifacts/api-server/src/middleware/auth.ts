@@ -23,10 +23,17 @@ declare global {
 
 export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.cookies?.access_token;
+    // 3. Try to get token from Authorization header first (Bearer token handoff), fallback to cookie
+    const authHeader = req.headers.authorization;
+    let token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      token = req.cookies?.access_token;
+    }
+
     if (!token) return res.status(401).json({ error: "Unauthorized. Please log in." });
 
-    // 3. Cast the verified token to our custom interface
+    // 4. Cast the verified token to our custom interface
     const decoded = jwt.verify(token, JWT_SECRET) as CustomJwtPayload;
     req.userId = decoded.userId;
 

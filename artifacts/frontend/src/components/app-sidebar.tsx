@@ -12,12 +12,8 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
-  MessageSquare,
   PenTool,
   CalendarDays,
-  BarChart3,
-  Inbox,
-  Settings,
   Database,
   Sparkles
 } from "lucide-react";
@@ -25,16 +21,12 @@ import {
 // Navigation items derived from the BrandFlow PRD
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "AI Chat", url: "/chat", icon: MessageSquare },
   { title: "Content Generator", url: "/generate", icon: PenTool },
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
-  { title: "Inbox", url: "/inbox", icon: Inbox },
 ];
 
 const settingsItems = [
   { title: "Knowledge Base", url: "/knowledge", icon: Database },
-  { title: "Brand Settings", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {

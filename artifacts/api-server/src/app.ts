@@ -26,15 +26,18 @@ app.use(
     },
   }),
 );
+
+// 🚀 FIX: Allow the Ngrok bypass header
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true, // This allows the browser to send and receive cookies
-    allowedHeaders: ["Content-Type", "Authorization", "x-project-id"], // Allow our new tenant header
+    allowedHeaders: ["Content-Type", "Authorization", "x-project-id", "ngrok-skip-browser-warning"], 
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json({ limit: "10mb" })); // Increased from default 100kb
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
 app.use("/api", router);

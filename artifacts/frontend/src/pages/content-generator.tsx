@@ -35,24 +35,12 @@ import {
   Calendar, 
   Wand2, 
   Check, 
-  Share2, 
-  Twitter, 
   Linkedin, 
-  Instagram, 
-  Facebook,
   RotateCw,
   Bookmark
 } from "lucide-react";
 import { BACKEND_URL } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
-
-// Platform options supported by BrandFlow
-const PLATFORMS = [
-  { id: "x", name: "X (Twitter)", icon: Twitter, color: "hover:bg-slate-800" },
-  { id: "linkedin", name: "LinkedIn", icon: Linkedin, color: "hover:bg-blue-600" },
-  { id: "instagram", name: "Instagram", icon: Instagram, color: "hover:bg-pink-600" },
-  { id: "facebook", name: "Facebook", icon: Facebook, color: "hover:bg-blue-700" },
-];
 
 const TONES = [
   "Professional & Authoritative",
@@ -64,8 +52,9 @@ const TONES = [
 ];
 
 const FORMATS = [
-  "Single Post",
-  "Caption & Hashtags",
+  "Standard Post",
+  "Listicle",
+  "Story / Narrative",
   "Hook & Call to Action"
 ];
 
@@ -75,7 +64,6 @@ export default function ContentGenerator() {
 
   // Generator Controls State
   const [prompt, setPrompt] = React.useState("");
-  const [selectedPlatforms, setSelectedPlatforms] = React.useState<string[]>(["x", "linkedin"]);
   const [tone, setTone] = React.useState(TONES[0]);
   const [format, setFormat] = React.useState(FORMATS[0]);
   
@@ -88,7 +76,6 @@ export default function ContentGenerator() {
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
   const [variations, setVariations] = React.useState<Array<{
     id: string;
-    platform: string;
     content: string;
     characterCount: number;
   }>>([]);
@@ -96,8 +83,8 @@ export default function ContentGenerator() {
   // Action Tracking State (Prevents duplicate saves and handles draft -> scheduled transitions)
   const [postStatuses, setPostStatuses] = React.useState<Record<string, 'draft' | 'scheduled'>>({});
 
-  // Scheduling State (Now tracks ID as well)
-  const [schedulingPost, setSchedulingPost] = React.useState<{id: string, platform: string, content: string} | null>(null);
+  // Scheduling State
+  const [schedulingPost, setSchedulingPost] = React.useState<{id: string, content: string} | null>(null);
   const [scheduleDate, setScheduleDate] = React.useState("");
 
   // --- AI Generation Mutation ---
@@ -119,7 +106,7 @@ export default function ContentGenerator() {
       setVariations(data.variations);
       toast({
         title: "Content generated!",
-        description: `Successfully crafted variations for ${selectedPlatforms.length} platform(s).`
+        description: "Successfully crafted 3 LinkedIn post variations."
       });
     },
     onError: (error: any) => {
@@ -150,8 +137,9 @@ export default function ContentGenerator() {
     }
   });
 
-  const handleSaveDraft = (id: string, platform: string, content: string) => {
-    savePostMutation.mutate({ platform, content, status: 'draft' });
+  const handleSaveDraft = (id: string, content: string) => {
+    // Hardcoded to linkedin as it is now our exclusive platform
+    savePostMutation.mutate({ platform: 'linkedin', content, status: 'draft' });
     setPostStatuses((prev) => ({ ...prev, [id]: 'draft' }));
   };
 
@@ -162,7 +150,7 @@ export default function ContentGenerator() {
     }
     
     savePostMutation.mutate({ 
-      platform: schedulingPost.platform, 
+      platform: 'linkedin', 
       content: schedulingPost.content, 
       status: 'scheduled',
       scheduledAt: new Date(scheduleDate).toISOString()
@@ -176,16 +164,6 @@ export default function ContentGenerator() {
     setScheduleDate("");
   };
 
-  const togglePlatform = (id: string) => {
-    if (selectedPlatforms.includes(id)) {
-      if (selectedPlatforms.length > 1) {
-        setSelectedPlatforms(selectedPlatforms.filter((p) => p !== id));
-      }
-    } else {
-      setSelectedPlatforms([...selectedPlatforms, id]);
-    }
-  };
-
   const handleGenerate = () => {
     if (!prompt.trim()) {
       toast({
@@ -196,18 +174,8 @@ export default function ContentGenerator() {
       return;
     }
 
-    if (selectedPlatforms.length === 0) {
-      toast({
-        title: "Platform required",
-        description: "Please select at least one platform target.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     generateMutation.mutate({
       prompt,
-      platforms: selectedPlatforms,
       tone,
       format,
       useBrandVoice,
@@ -228,11 +196,11 @@ export default function ContentGenerator() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-          <Sparkles className="h-7 w-7 text-indigo-500" />
-          AI Content Studio
+          <Sparkles className="h-7 w-7 text-[#0A66C2]" />
+          LinkedIn Studio
         </h1>
         <p className="text-muted-foreground mt-1">
-          Generate platform-native social media content tailored to your brand voice.
+          Generate platform-native LinkedIn content tailored exactly to your brand voice.
         </p>
       </div>
 
@@ -241,7 +209,7 @@ export default function ContentGenerator() {
         <Card className="lg:col-span-5 border-border/60 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg">Generator Controls</CardTitle>
-            <CardDescription>Configure output parameters for your AI agent.</CardDescription>
+            <CardDescription>Configure output parameters for your AI copywriter.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             
@@ -255,30 +223,6 @@ export default function ContentGenerator() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
               />
-            </div>
-
-            {/* Platform Selection */}
-            <div className="grid gap-2">
-              <Label className="font-semibold">Target Platforms</Label>
-              <div className="flex flex-wrap gap-2">
-                {PLATFORMS.map((p) => {
-                  const Icon = p.icon;
-                  const isSelected = selectedPlatforms.includes(p.id);
-                  return (
-                    <Button
-                      key={p.id}
-                      type="button"
-                      variant={isSelected ? "default" : "outline"}
-                      size="sm"
-                      className="gap-2 rounded-lg"
-                      onClick={() => togglePlatform(p.id)}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {p.name}
-                    </Button>
-                  );
-                })}
-              </div>
             </div>
 
             {/* Tone & Format Selectors */}
@@ -341,7 +285,7 @@ export default function ContentGenerator() {
 
             {/* Generate Action Button */}
             <Button 
-              className="w-full gap-2 py-2 text-base font-medium bg-indigo-600 hover:bg-indigo-700 text-white" 
+              className="w-full gap-2 py-2 text-base font-medium bg-[#0A66C2] hover:bg-[#004182] text-white" 
               onClick={handleGenerate}
               disabled={generateMutation.isPending}
             >
@@ -367,7 +311,7 @@ export default function ContentGenerator() {
               <Sparkles className="h-12 w-12 text-muted-foreground/40 mb-4" />
               <h3 className="text-lg font-semibold">Your Studio Canvas</h3>
               <p className="text-sm text-muted-foreground max-w-sm mt-1">
-                Enter a topic on the left and click "Generate Content" to craft tailored social posts.
+                Enter a topic on the left and click "Generate Content" to craft tailored LinkedIn posts.
               </p>
             </Card>
           ) : (
@@ -376,19 +320,13 @@ export default function ContentGenerator() {
                 <h2 className="text-lg font-semibold tracking-tight">Generated Output</h2>
                 {useBrandVoice && (
                   <Badge variant="secondary" className="gap-1">
-                    <Sparkles className="h-3 w-3 text-indigo-500" />
+                    <Sparkles className="h-3 w-3 text-[#0A66C2]" />
                     RAG Enhanced
                   </Badge>
                 )}
               </div>
 
-              {variations.map((v) => {
-                const PlatformMeta = PLATFORMS.find((p) => 
-                  p.id.toLowerCase() === v.platform.toLowerCase() || 
-                  p.name.toLowerCase().includes(v.platform.toLowerCase())
-                );
-                const Icon = PlatformMeta?.icon || Share2;
-                
+              {variations.map((v, index) => {
                 // Track button statuses locally
                 const currentStatus = postStatuses[v.id];
                 const isDraft = currentStatus === 'draft';
@@ -398,10 +336,10 @@ export default function ContentGenerator() {
                   <Card key={v.id} className="border-border/60 hover:border-border transition-all">
                     <CardHeader className="pb-3 flex flex-row items-center justify-between space-y-0">
                       <div className="flex items-center gap-2">
-                        <div className="p-2 rounded-lg bg-muted">
-                          <Icon className="h-4 w-4" />
+                        <div className="p-2 rounded-lg bg-[#0A66C2]/10 text-[#0A66C2]">
+                          <Linkedin className="h-4 w-4" />
                         </div>
-                        <span className="font-semibold text-sm capitalize">{PlatformMeta?.name || v.platform}</span>
+                        <span className="font-semibold text-sm">Option {index + 1}</span>
                       </div>
                       <span className="text-xs text-muted-foreground font-mono">
                         {v.characterCount} chars
@@ -428,7 +366,7 @@ export default function ContentGenerator() {
                             variant="outline" 
                             size="sm" 
                             className="gap-2"
-                            onClick={() => handleSaveDraft(v.id, v.platform, v.content)}
+                            onClick={() => handleSaveDraft(v.id, v.content)}
                             // Disable if already saved as a draft OR if it's been scheduled
                             disabled={isDraft || isScheduled || savePostMutation.isPending}
                           >
@@ -439,11 +377,11 @@ export default function ContentGenerator() {
 
                         <Button 
                           size="sm" 
-                          className="gap-2 bg-slate-900 dark:bg-slate-100"
-                          onClick={() => setSchedulingPost({ id: v.id, platform: v.platform, content: v.content })}
+                          className="gap-2 bg-[#0A66C2] hover:bg-[#004182] text-white"
+                          onClick={() => setSchedulingPost({ id: v.id, content: v.content })}
                           disabled={isScheduled || savePostMutation.isPending}
                         >
-                          {isScheduled ? <Check className="h-4 w-4 text-green-500" /> : <Calendar className="h-4 w-4" />}
+                          {isScheduled ? <Check className="h-4 w-4 text-white" /> : <Calendar className="h-4 w-4" />}
                           {isScheduled ? "Scheduled" : "Schedule Post"}
                         </Button>
                       </div>
@@ -462,7 +400,7 @@ export default function ContentGenerator() {
           <DialogHeader>
             <DialogTitle>Schedule Post</DialogTitle>
             <DialogDescription>
-              Select a future date and time to automatically publish this post to {schedulingPost?.platform}.
+              Select a future date and time to automatically publish this post to LinkedIn.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -479,7 +417,7 @@ export default function ContentGenerator() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setSchedulingPost(null)}>Cancel</Button>
-            <Button onClick={handleConfirmSchedule} disabled={savePostMutation.isPending}>
+            <Button onClick={handleConfirmSchedule} disabled={savePostMutation.isPending} className="bg-[#0A66C2] hover:bg-[#004182] text-white">
               {savePostMutation.isPending ? "Scheduling..." : "Confirm Schedule"}
             </Button>
           </DialogFooter>

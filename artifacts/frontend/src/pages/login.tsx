@@ -1,43 +1,41 @@
 import * as React from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { BACKEND_URL } from "@/lib/utils";
-import { Sparkles, Loader2 } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { Sparkles, Loader2, Linkedin } from "lucide-react";
 
 export default function Login() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { checkAuth } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include", // Send cookie instruction
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("error")) {
+      toast({ 
+        title: "Authentication Failed", 
+        description: "Could not sign in with LinkedIn. Please try again.", 
+        variant: "destructive" 
       });
+      // Clean the URL so the toast doesn't keep appearing on refresh
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [toast]);
 
+  const handleLinkedInAuth = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/linkedin/auth-url`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to login");
-
-      await checkAuth(); // Refresh global auth state
-      toast({ title: "Welcome back!" });
-      setLocation("/"); // Redirect to dashboard
+      
+      if (!res.ok) throw new Error(data.error || "Failed to initiate login");
+      
+      // Redirect directly to the LinkedIn authorization screen
+      window.location.href = data.url;
     } catch (error: any) {
-      toast({ title: "Login Failed", description: error.message, variant: "destructive" });
-    } finally {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
       setIsLoading(false);
     }
   };
@@ -50,42 +48,23 @@ export default function Login() {
             <Sparkles className="h-6 w-6 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold">Sign in to BrandFlow</CardTitle>
-          <CardDescription>Welcome back! Please enter your details.</CardDescription>
+          <CardDescription>
+            Access your workspace and manage your LinkedIn presence.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                placeholder="m@example.com" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input 
-                id="password" 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required 
-              />
-            </div>
-            <Button type="submit" className="w-full mt-2" disabled={isLoading}>
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
-            </Button>
-          </form>
-          
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Button variant="link" className="p-0 text-primary" onClick={() => setLocation("/register")}>
-              Sign up
-            </Button>
-          </div>
+          <Button 
+            className="w-full h-12 text-base gap-3 bg-[#0A66C2] hover:bg-[#004182] text-white" 
+            onClick={handleLinkedInAuth}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Linkedin className="h-5 w-5 fill-current" />
+            )}
+            Continue with LinkedIn
+          </Button>
         </CardContent>
       </Card>
     </div>

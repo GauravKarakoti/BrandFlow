@@ -1,6 +1,7 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 import "dotenv/config";
+import { initCronJobs } from "./workers/publisher";
 
 const rawPort = process.env["PORT"];
 
@@ -15,6 +16,8 @@ const port = Number(rawPort);
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
+
+initCronJobs();
 
 app.listen(port, (err) => {
   if (err) {

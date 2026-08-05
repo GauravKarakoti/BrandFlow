@@ -21,15 +21,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Calendar as CalendarIcon, Clock, Edit2, Trash2, Twitter, Linkedin, Instagram, Facebook, CalendarPlus } from "lucide-react";
+import { Loader2, Calendar as CalendarIcon, Clock, Edit2, Trash2, Linkedin, CalendarPlus } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 const getPlatformMeta = (platform: string) => {
   const p = platform.toLowerCase();
-  if (p.includes('x') || p.includes('twitter')) return { icon: Twitter, color: "text-slate-800 dark:text-slate-200" };
   if (p.includes('linkedin')) return { icon: Linkedin, color: "text-blue-600" };
-  if (p.includes('instagram')) return { icon: Instagram, color: "text-pink-600" };
-  if (p.includes('facebook')) return { icon: Facebook, color: "text-blue-700" };
   return { icon: CalendarIcon, color: "text-primary" };
 };
 
