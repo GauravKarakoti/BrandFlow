@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 interface User {
   id: string;
   email: string;
+  name?: string;
+  avatarUrl?: string;
 }
 
 interface Project {

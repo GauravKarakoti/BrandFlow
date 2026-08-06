@@ -12,6 +12,7 @@ import KnowledgeBase from '@/pages/knowledge-base';
 import ContentGenerator from '@/pages/content-generator';
 import Calendar from '@/pages/calendar';
 import Login from '@/pages/login';
+import Dashboard from './pages/dashboard';
 
 const queryClient = new QueryClient();
 
@@ -54,7 +55,7 @@ function Router() {
       <Route path="/login" component={Login} />
 
       {/* Protected App Routes */}
-      <Route path="/" component={() => <ProtectedRoute component={() => <ModulePlaceholder title="Dashboard" description="System overview and daily metrics." />} />} />
+      <Route path="/" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/generate" component={() => <ProtectedRoute component={ContentGenerator} />} />
       <Route path="/calendar" component={() => <ProtectedRoute component={Calendar} />} />
       <Route path="/knowledge" component={() => <ProtectedRoute component={KnowledgeBase} />} />
