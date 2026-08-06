@@ -3,3 +3,4 @@ export * from "./posts";
 export * from "./knowledge-base";
 export * from "./auth";
 export * from "./integrations";
+export * from "./agent-settings";

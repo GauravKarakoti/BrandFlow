@@ -50,6 +50,13 @@
       "when": 1785950620191,
       "tag": "0006_lazy_betty_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786031167529,
+      "tag": "0007_colorful_spacker_dave",
+      "breakpoints": true
     }
   ]
 }

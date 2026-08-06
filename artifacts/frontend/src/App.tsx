@@ -13,6 +13,7 @@ import ContentGenerator from '@/pages/content-generator';
 import Calendar from '@/pages/calendar';
 import Login from '@/pages/login';
 import Dashboard from './pages/dashboard';
+import AgentConfiguration from './pages/agent-configuration';
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ function Router() {
       <Route path="/" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/generate" component={() => <ProtectedRoute component={ContentGenerator} />} />
       <Route path="/calendar" component={() => <ProtectedRoute component={Calendar} />} />
+      <Route path="/agent" component={() => <ProtectedRoute component={AgentConfiguration} />} />
       <Route path="/knowledge" component={() => <ProtectedRoute component={KnowledgeBase} />} />
 
       <Route component={NotFound} />

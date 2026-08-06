@@ -15,7 +15,8 @@ import {
   PenTool,
   CalendarDays,
   Database,
-  Sparkles
+  Sparkles,
+  Settings,
 } from "lucide-react";
 
 // Navigation items derived from the BrandFlow PRD
@@ -23,6 +24,7 @@ const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Content Generator", url: "/generate", icon: PenTool },
   { title: "Calendar", url: "/calendar", icon: CalendarDays },
+  { title: "Agent Configuration", url: "/agent", icon: Settings },
 ];
 
 const settingsItems = [
