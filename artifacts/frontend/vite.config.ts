@@ -52,6 +52,22 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: path.resolve(import.meta.dirname, 'dist/public'),
       emptyOutDir: true,
+      rollupOptions: {
+        onwarn(warning, defaultHandler) {
+          // Suppress "Module level directives cause errors when bundled" warnings ("use client")
+          if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+            return;
+          }
+          // Suppress the specific sourcemap error you are seeing
+          if (warning.message.includes('Error when using sourcemap for reporting an error')) {
+            return;
+          }
+          
+          // Let all other warnings pass through to the terminal
+          defaultHandler(warning);
+        },
+      },
+      sourcemap: false,
     },
     server: {
       port,
