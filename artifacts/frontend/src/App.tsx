@@ -17,16 +17,6 @@ import AgentConfiguration from './pages/agent-configuration';
 
 const queryClient = new QueryClient();
 
-// Placeholder for unbuilt routes
-const ModulePlaceholder = ({ title, description }: { title: string, description: string }) => (
-  <div className="flex h-full min-h-[60vh] flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-background/50">
-    <div className="flex flex-col items-center text-center max-w-md space-y-2">
-      <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-      <p className="text-sm text-muted-foreground">{description}</p>
-    </div>
-  </div>
-);
-
 // Protected Route Wrapper
 const ProtectedRoute = ({ component: Component }: { component: React.ElementType }) => {
   const { user, isLoading } = useAuth();

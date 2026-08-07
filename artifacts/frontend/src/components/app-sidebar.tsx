@@ -15,7 +15,6 @@ import {
   PenTool,
   CalendarDays,
   Database,
-  Sparkles,
   Settings,
 } from "lucide-react";
 
@@ -38,7 +37,11 @@ export function AppSidebar() {
     <Sidebar variant="inset">
       <SidebarHeader className="p-2.5 border-b border-border/50">
         <div className="flex items-center gap-2 font-semibold text-lg text-primary tracking-tight">
-          <Sparkles className="h-5 w-5 text-indigo-500" />
+          <img 
+            src="/logo.png" 
+            alt="BrandFlow Logo" 
+            className="h-10 w-10 object-contain" 
+          />
           <span>BrandFlow</span>
         </div>
       </SidebarHeader>

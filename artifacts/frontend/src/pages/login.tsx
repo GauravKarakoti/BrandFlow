@@ -44,8 +44,12 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
       <Card className="w-full max-w-md shadow-lg border-border/60">
         <CardHeader className="space-y-3 items-center text-center">
-          <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center mb-2">
-            <Sparkles className="h-6 w-6 text-primary" />
+          <div className="h-24 w-24 bg-primary/10 rounded-xl flex items-center justify-center mb-2">
+            <img 
+              src="/logo.png" 
+              alt="BrandFlow Logo" 
+              className="h-24 w-24 object-contain" 
+            />
           </div>
           <CardTitle className="text-2xl font-bold">Sign in to BrandFlow</CardTitle>
           <CardDescription>
