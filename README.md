@@ -2,6 +2,16 @@
 
 An autonomous AI agent and SaaS application that contextually generates and schedules LinkedIn posts using a personalized brand knowledge base.
 
+# Overview
+
+BrandFlow is an AI Social Media Manager designed to automate LinkedIn content creation for businesses, startups, creators, and professionals.
+
+Instead of manually writing and publishing posts, users configure their brand identity, audience, content pillars, and posting schedule. BrandFlow's autonomous AI agent then generates contextual LinkedIn posts using Groq AI and automatically publishes them at scheduled times.
+
+The platform combines AI-driven content generation, PostgreSQL-powered data management, and automated publishing workers to provide a complete social media automation solution.
+
+---
+
 ## Run & Operate
 
 - `pnpm run dev:api` — run the API server (port 5000)
@@ -12,7 +22,86 @@ An autonomous AI agent and SaaS application that contextually generates and sche
 - `pnpm run db:push` — push DB schema changes (dev only)
 - Required env: `DATABASE_URL` (Postgres), `GROQ_API_KEY` (AI generation), and social OAuth credentials (LinkedIn).
 
-## Stack
+
+# Features
+
+- 🤖 AI-powered LinkedIn post generation
+- 📅 Automatic post scheduling
+- 🚀 Autonomous publishing using background workers
+- 🧠 Personalized Brand Knowledge Base
+- 🎯 Custom content pillars and posting frequency
+- 🔗 LinkedIn OAuth authentication
+- ⚡ Groq LLM integration for contextual content creation
+- 📊 User dashboard for agent configuration
+- 🔒 Type-safe API using TypeScript and Zod
+- 🗄️ PostgreSQL database with Drizzle ORM
+
+---
+
+# Project Structure
+
+```text
+BrandFlow
+│
+├── artifacts/
+│   ├── frontend/            # React frontend
+│   └── api-server/          # Express backend
+│       └── workers/
+│           ├── agent.ts
+│           └── publisher.ts
+│
+├── lib/
+│   ├── db/                  # Database schema & migrations
+│   ├── api-spec/            # OpenAPI specification
+│   └── api-client-react/    # Generated React API hooks
+│
+└── package.json
+```
+
+---
+
+# Installation & Setup
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/GauravKarakoti/BrandFlow.git
+cd BrandFlow
+```
+## 2. Install Dependencies
+
+```bash
+pnpm install
+```
+## 3. Configure Environment Variables
+
+Copy .env.example to .env:
+```bash
+cp .env.example .env
+```
+
+## 4. Push Database Schema
+
+```bash
+pnpm run db:push
+```
+
+## 5. Start Development Servers
+
+Backend
+
+```bash
+pnpm run dev:api
+```
+Frontend
+
+```bash
+pnpm run dev:frontend
+```
+
+---
+
+## Tech Stack
 
 - Workspace: pnpm workspaces, Node.js 24, TypeScript 5.9
 - Frontend: React, Vite, Tailwind CSS, shadcn/ui, React Query, Wouter
@@ -36,6 +125,40 @@ An autonomous AI agent and SaaS application that contextually generates and sche
 - Autonomous Agent Pivot: Evolved from a manual prompt-and-publish workflow into a fully autonomous system where a daily background worker evaluates user schedules and generates content without human intervention.
 - Optimistic Locking for Publishing: The minute-by-minute publisher worker utilizes an optimistic lock (`status = 'publishing'`) on database rows to safely prevent duplicate postings when running multiple server instances.
 - Context-Injected Zero-Shot Generation: The Groq-powered AI pipeline bypasses LangChain entirely, relying instead on highly structured, zero-shot system prompts populated dynamically by the user's `brandKnowledgeBase` and `agentSettings`.
+
+# Technical Workflow
+
+```text
+             User
+               │
+               ▼
+        React Frontend
+               │
+               ▼
+        Express API Server
+               │
+      ┌────────┴─────────┐
+      ▼                  ▼
+ Brand Knowledge      Agent Settings
+      │                  │
+      └────────┬─────────┘
+               ▼
+        Groq AI Generation
+               │
+               ▼
+      Scheduled Posts (PostgreSQL)
+               │
+               ▼
+     Publisher Worker (Cron Job)
+               │
+               ▼
+      LinkedIn Publishing API
+               │
+               ▼
+     Published LinkedIn Post
+```
+
+---
 
 ## Product
 
