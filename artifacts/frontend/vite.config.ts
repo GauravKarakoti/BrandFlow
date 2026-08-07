@@ -8,27 +8,15 @@ export default defineConfig(({ mode }) => {
   // The third argument '' tells Vite to load all variables, not just ones prefixed with VITE_
   const env = loadEnv(mode, process.cwd(), '');
 
-  const rawPort = env.PORT;
-
-  if (!rawPort) {
-    throw new Error(
-      'PORT environment variable is required but was not provided.',
-    );
-  }
-
+  const rawPort = env.PORT || '5134';
   const port = Number(rawPort);
 
   if (Number.isNaN(port) || port <= 0) {
     throw new Error(`Invalid PORT value: "${rawPort}"`);
   }
 
-  const basePath = env.BASE_PATH;
-
-  if (!basePath) {
-    throw new Error(
-      'BASE_PATH environment variable is required but was not provided.',
-    );
-  }
+  // Provide a fallback base path
+  const basePath = env.BASE_PATH || '/';
 
   return {
     base: basePath,
