@@ -1,68 +1,80 @@
-import { Router, type IRouter } from "express";
-import { eq, and, desc } from "drizzle-orm";
-import { db, knowledgeTable } from "@workspace/db";
-import {
-  CreateKnowledgeBody,
-  DeleteKnowledgeParams,
-  ListKnowledgeResponse,
-  CreateKnowledgeResponse,
-} from "@workspace/api-zod";
-import { requireAuth } from "../middlewares/requireAuth";
+  import { Router } from "express";
+  import { eq, and } from "drizzle-orm";
+  import { brandKnowledgeBase, db } from "@workspace/db";
+  import { requireAuth } from "../middleware/auth";
 
-const router: IRouter = Router();
+  const router = Router();
 
-router.get("/knowledge", requireAuth, async (req, res): Promise<void> => {
-  const userId = (req as any).userId as string;
-  const items = await db
-    .select()
-    .from(knowledgeTable)
-    .where(eq(knowledgeTable.userId, userId))
-    .orderBy(desc(knowledgeTable.createdAt));
+  /**
+   * GET /api/knowledge-base
+   * Fetch current brand knowledge base record for the active project
+   */
+  router.get("/", requireAuth, async (req, res) => {
+    try {
+      if (!req.projectId) return res.status(400).json({ error: "Project context required." });
 
-  res.json(
-    ListKnowledgeResponse.parse(
-      items.map((i) => ({ ...i, createdAt: i.createdAt.toISOString() })),
-    ),
-  );
-});
+      const record = await db
+        .select()
+        .from(brandKnowledgeBase)
+        .where(eq(brandKnowledgeBase.projectId, req.projectId)) // Multi-tenant isolation
+        .limit(1);
 
-router.post("/knowledge", requireAuth, async (req, res): Promise<void> => {
-  const userId = (req as any).userId as string;
-  const parsed = CreateKnowledgeBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
-    return;
-  }
+      return res.json(record[0] || null);
+    } catch (error) {
+      console.error("Failed to fetch Knowledge Base:", error);
+      return res.status(500).json({ error: "Failed to fetch Knowledge Base data" });
+    }
+  });
 
-  const [item] = await db
-    .insert(knowledgeTable)
-    .values({ userId, ...parsed.data })
-    .returning();
+  /**
+   * POST /api/knowledge-base
+   * Create or update the brand knowledge base context
+   */
+  router.post("/", requireAuth, async (req, res) => {
+    try {
+      if (!req.projectId) return res.status(400).json({ error: "Project context required." });
 
-  res.status(201).json(
-    CreateKnowledgeResponse.parse({ ...item, createdAt: item.createdAt.toISOString() }),
-  );
-});
+      const payload = req.body;
 
-router.delete("/knowledge/:id", requireAuth, async (req, res): Promise<void> => {
-  const userId = (req as any).userId as string;
-  const params = DeleteKnowledgeParams.safeParse(req.params);
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
+      // Search only within the active project
+      const existing = await db
+        .select()
+        .from(brandKnowledgeBase)
+        .where(eq(brandKnowledgeBase.projectId, req.projectId))
+        .limit(1);
 
-  const [item] = await db
-    .delete(knowledgeTable)
-    .where(and(eq(knowledgeTable.id, params.data.id), eq(knowledgeTable.userId, userId)))
-    .returning();
+      if (existing.length > 0) {
+        const updated = await db
+          .update(brandKnowledgeBase)
+          .set({
+            ...payload,
+            updatedAt: new Date(),
+          })
+          .where(
+            and(
+              eq(brandKnowledgeBase.id, existing[0].id),
+              eq(brandKnowledgeBase.projectId, req.projectId) // Security enforcement
+            )
+          )
+          .returning();
 
-  if (!item) {
-    res.status(404).json({ error: "Knowledge item not found" });
-    return;
-  }
+        return res.json(updated[0]);
+      }
 
-  res.sendStatus(204);
-});
+      // Insert new record, explicitly attaching the project ID
+      const inserted = await db
+        .insert(brandKnowledgeBase)
+        .values({
+          ...payload,
+          projectId: req.projectId, 
+        })
+        .returning();
 
-export default router;
+      return res.json(inserted[0]);
+    } catch (error) {
+      console.error("Failed to save Knowledge Base:", error);
+      return res.status(500).json({ error: "Failed to save Knowledge Base data" });
+    }
+  });
+
+  export default router;

@@ -643,7 +643,7 @@ components:
           type: ["string", "null"]
         platform:
           type: string
-          enum: [twitter, linkedin, instagram, facebook]
+          enum: [linkedin]
         status:
           type: string
           enum: [draft, scheduled, published, failed]
@@ -680,7 +680,7 @@ components:
           type: string
         platform:
           type: string
-          enum: [twitter, linkedin, instagram, facebook]
+          enum: [linkedin]
         tone:
           type: string
         imageUrl:
@@ -757,7 +757,7 @@ components:
           type: string
         platform:
           type: string
-          enum: [twitter, linkedin, instagram, facebook]
+          enum: [linkedin]
         tone:
           type: string
           enum: [professional, funny, casual, luxury, startup, corporate]

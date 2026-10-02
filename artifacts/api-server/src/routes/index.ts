@@ -1,26 +1,20 @@
-import { Router, type IRouter } from "express";
-import healthRouter from "./health";
-import postsRouter from "./posts";
-import schedulesRouter from "./schedules";
-import analyticsRouter from "./analytics";
-import aiRouter from "./ai";
-import commentsRouter from "./comments";
-import brandRouter from "./brand";
-import knowledgeRouter from "./knowledge";
-import teamRouter from "./team";
-import dashboardRouter from "./dashboard";
+  import { Router } from "express";
+  import healthRouter from "./health";
+  import knowledgeRouter from "./knowledge";
+  import uploadRouter from "./upload";
+  import generateRouter from "./generate";
+  import postsRouter from "./posts";
+  import authRouter from "./auth";
+  import projectsRouter from "./projects";
 
-const router: IRouter = Router();
+  const router = Router();
 
-router.use(healthRouter);
-router.use(postsRouter);
-router.use(schedulesRouter);
-router.use(analyticsRouter);
-router.use(aiRouter);
-router.use(commentsRouter);
-router.use(brandRouter);
-router.use(knowledgeRouter);
-router.use(teamRouter);
-router.use(dashboardRouter);
+  router.use("/health", healthRouter);
+  router.use("/knowledge-base", knowledgeRouter);
+  router.use("/upload", uploadRouter);
+  router.use("/generate", generateRouter);
+  router.use("/posts", postsRouter);
+  router.use("/auth", authRouter);
+  router.use("/projects", projectsRouter);
 
-export default router;
+  export default router;
