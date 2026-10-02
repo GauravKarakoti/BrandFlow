@@ -14,6 +14,7 @@ import Calendar from '@/pages/calendar';
 import Login from '@/pages/login';
 import Dashboard from './pages/dashboard';
 import AgentConfiguration from './pages/agent-configuration';
+import LandingPage from './pages/landing'; // Adjust this import path if needed
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,7 @@ const ProtectedRoute = ({ component: Component }: { component: React.ElementType
   const [, setLocation] = useLocation();
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+    return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
 
   if (!user) {
@@ -42,11 +43,12 @@ const ProtectedRoute = ({ component: Component }: { component: React.ElementType
 function Router() {
   return (
     <Switch>
-      {/* Public Auth Routes */}
+      {/* Public Routes */}
+      <Route path="/" component={LandingPage} />
       <Route path="/login" component={Login} />
 
       {/* Protected App Routes */}
-      <Route path="/" component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/generate" component={() => <ProtectedRoute component={ContentGenerator} />} />
       <Route path="/calendar" component={() => <ProtectedRoute component={Calendar} />} />
       <Route path="/agent" component={() => <ProtectedRoute component={AgentConfiguration} />} />
@@ -61,7 +63,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+        <WouterRouter base={import.meta.env.BASE_URL?.replace(/\/$/, '') || ''}>
           <AuthProvider>
             <Router />
           </AuthProvider>

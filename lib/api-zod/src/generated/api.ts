@@ -5,658 +5,650 @@
  * BrandFlow API specification
  * OpenAPI spec version: 0.1.0
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
-  "status": zod.string()
-})
-
+  status: zod.string(),
+});
 
 /**
  * @summary List all posts
  */
 export const ListPostsQueryParams = zod.object({
-  "platform": zod.coerce.string().optional(),
-  "status": zod.coerce.string().optional(),
-  "limit": zod.coerce.number().optional(),
-  "offset": zod.coerce.number().optional()
-})
+  platform: zod.coerce.string().optional(),
+  status: zod.coerce.string().optional(),
+  limit: zod.coerce.number().optional(),
+  offset: zod.coerce.number().optional(),
+});
 
 export const ListPostsResponseItem = zod.object({
-  "id": zod.number(),
-  "content": zod.string(),
-  "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "status": zod.enum(['draft', 'scheduled', 'published', 'failed']),
-  "tone": zod.string().nullish(),
-  "imageUrl": zod.string().nullish(),
-  "engagementScore": zod.number().nullish(),
-  "likes": zod.number().nullish(),
-  "shares": zod.number().nullish(),
-  "comments": zod.number().nullish(),
-  "reach": zod.number().nullish(),
-  "createdAt": zod.string(),
-  "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish()
-})
-export const ListPostsResponse = zod.array(ListPostsResponseItem)
-
+  id: zod.number(),
+  content: zod.string(),
+  caption: zod.string().nullish(),
+  hashtags: zod.string().nullish(),
+  platform: zod.enum(["linkedin"]),
+  status: zod.enum(["draft", "scheduled", "published", "failed"]),
+  tone: zod.string().nullish(),
+  imageUrl: zod.string().nullish(),
+  engagementScore: zod.number().nullish(),
+  likes: zod.number().nullish(),
+  shares: zod.number().nullish(),
+  comments: zod.number().nullish(),
+  reach: zod.number().nullish(),
+  createdAt: zod.string(),
+  scheduledAt: zod.string().nullish(),
+  publishedAt: zod.string().nullish(),
+});
+export const ListPostsResponse = zod.array(ListPostsResponseItem);
 
 /**
  * @summary Create a new post
  */
 export const CreatePostBody = zod.object({
-  "content": zod.string(),
-  "caption": zod.string().optional(),
-  "hashtags": zod.string().optional(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "tone": zod.string().optional(),
-  "imageUrl": zod.string().optional(),
-  "scheduledAt": zod.string().optional()
-})
+  content: zod.string(),
+  caption: zod.string().optional(),
+  hashtags: zod.string().optional(),
+  platform: zod.enum(["linkedin"]),
+  tone: zod.string().optional(),
+  imageUrl: zod.string().optional(),
+  scheduledAt: zod.string().optional(),
+});
 
 export const CreatePostResponse = zod.object({
-  "id": zod.number(),
-  "content": zod.string(),
-  "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "status": zod.enum(['draft', 'scheduled', 'published', 'failed']),
-  "tone": zod.string().nullish(),
-  "imageUrl": zod.string().nullish(),
-  "engagementScore": zod.number().nullish(),
-  "likes": zod.number().nullish(),
-  "shares": zod.number().nullish(),
-  "comments": zod.number().nullish(),
-  "reach": zod.number().nullish(),
-  "createdAt": zod.string(),
-  "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish()
-})
-
+  id: zod.number(),
+  content: zod.string(),
+  caption: zod.string().nullish(),
+  hashtags: zod.string().nullish(),
+  platform: zod.enum(["linkedin"]),
+  status: zod.enum(["draft", "scheduled", "published", "failed"]),
+  tone: zod.string().nullish(),
+  imageUrl: zod.string().nullish(),
+  engagementScore: zod.number().nullish(),
+  likes: zod.number().nullish(),
+  shares: zod.number().nullish(),
+  comments: zod.number().nullish(),
+  reach: zod.number().nullish(),
+  createdAt: zod.string(),
+  scheduledAt: zod.string().nullish(),
+  publishedAt: zod.string().nullish(),
+});
 
 /**
  * @summary Get post by id
  */
 export const GetPostParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
 export const GetPostResponse = zod.object({
-  "id": zod.number(),
-  "content": zod.string(),
-  "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "status": zod.enum(['draft', 'scheduled', 'published', 'failed']),
-  "tone": zod.string().nullish(),
-  "imageUrl": zod.string().nullish(),
-  "engagementScore": zod.number().nullish(),
-  "likes": zod.number().nullish(),
-  "shares": zod.number().nullish(),
-  "comments": zod.number().nullish(),
-  "reach": zod.number().nullish(),
-  "createdAt": zod.string(),
-  "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish()
-})
-
+  id: zod.number(),
+  content: zod.string(),
+  caption: zod.string().nullish(),
+  hashtags: zod.string().nullish(),
+  platform: zod.enum(["linkedin"]),
+  status: zod.enum(["draft", "scheduled", "published", "failed"]),
+  tone: zod.string().nullish(),
+  imageUrl: zod.string().nullish(),
+  engagementScore: zod.number().nullish(),
+  likes: zod.number().nullish(),
+  shares: zod.number().nullish(),
+  comments: zod.number().nullish(),
+  reach: zod.number().nullish(),
+  createdAt: zod.string(),
+  scheduledAt: zod.string().nullish(),
+  publishedAt: zod.string().nullish(),
+});
 
 /**
  * @summary Update a post
  */
 export const UpdatePostParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
 export const UpdatePostBody = zod.object({
-  "content": zod.string().optional(),
-  "caption": zod.string().optional(),
-  "hashtags": zod.string().optional(),
-  "platform": zod.string().optional(),
-  "tone": zod.string().optional(),
-  "status": zod.string().optional(),
-  "imageUrl": zod.string().optional(),
-  "scheduledAt": zod.string().optional()
-})
+  content: zod.string().optional(),
+  caption: zod.string().optional(),
+  hashtags: zod.string().optional(),
+  platform: zod.string().optional(),
+  tone: zod.string().optional(),
+  status: zod.string().optional(),
+  imageUrl: zod.string().optional(),
+  scheduledAt: zod.string().optional(),
+});
 
 export const UpdatePostResponse = zod.object({
-  "id": zod.number(),
-  "content": zod.string(),
-  "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "status": zod.enum(['draft', 'scheduled', 'published', 'failed']),
-  "tone": zod.string().nullish(),
-  "imageUrl": zod.string().nullish(),
-  "engagementScore": zod.number().nullish(),
-  "likes": zod.number().nullish(),
-  "shares": zod.number().nullish(),
-  "comments": zod.number().nullish(),
-  "reach": zod.number().nullish(),
-  "createdAt": zod.string(),
-  "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish()
-})
-
+  id: zod.number(),
+  content: zod.string(),
+  caption: zod.string().nullish(),
+  hashtags: zod.string().nullish(),
+  platform: zod.enum(["linkedin"]),
+  status: zod.enum(["draft", "scheduled", "published", "failed"]),
+  tone: zod.string().nullish(),
+  imageUrl: zod.string().nullish(),
+  engagementScore: zod.number().nullish(),
+  likes: zod.number().nullish(),
+  shares: zod.number().nullish(),
+  comments: zod.number().nullish(),
+  reach: zod.number().nullish(),
+  createdAt: zod.string(),
+  scheduledAt: zod.string().nullish(),
+  publishedAt: zod.string().nullish(),
+});
 
 /**
  * @summary Delete a post
  */
 export const DeletePostParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
-export const DeletePostResponse = zod.void()
-
+export const DeletePostResponse = zod.void();
 
 /**
  * @summary List scheduled posts
  */
 export const ListSchedulesQueryParams = zod.object({
-  "from": zod.coerce.string().optional(),
-  "to": zod.coerce.string().optional(),
-  "platform": zod.coerce.string().optional()
-})
+  from: zod.coerce.string().optional(),
+  to: zod.coerce.string().optional(),
+  platform: zod.coerce.string().optional(),
+});
 
 export const ListSchedulesResponseItem = zod.object({
-  "id": zod.number(),
-  "postId": zod.number(),
-  "scheduledAt": zod.string(),
-  "platform": zod.string(),
-  "status": zod.enum(['pending', 'sent', 'failed', 'cancelled']),
-  "createdAt": zod.string(),
-  "post": zod.object({
-  "id": zod.number(),
-  "content": zod.string(),
-  "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "status": zod.enum(['draft', 'scheduled', 'published', 'failed']),
-  "tone": zod.string().nullish(),
-  "imageUrl": zod.string().nullish(),
-  "engagementScore": zod.number().nullish(),
-  "likes": zod.number().nullish(),
-  "shares": zod.number().nullish(),
-  "comments": zod.number().nullish(),
-  "reach": zod.number().nullish(),
-  "createdAt": zod.string(),
-  "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish()
-}).optional()
-})
-export const ListSchedulesResponse = zod.array(ListSchedulesResponseItem)
-
+  id: zod.number(),
+  postId: zod.number(),
+  scheduledAt: zod.string(),
+  platform: zod.string(),
+  status: zod.enum(["pending", "sent", "failed", "cancelled"]),
+  createdAt: zod.string(),
+  post: zod
+    .object({
+      id: zod.number(),
+      content: zod.string(),
+      caption: zod.string().nullish(),
+      hashtags: zod.string().nullish(),
+      platform: zod.enum(["linkedin"]),
+      status: zod.enum(["draft", "scheduled", "published", "failed"]),
+      tone: zod.string().nullish(),
+      imageUrl: zod.string().nullish(),
+      engagementScore: zod.number().nullish(),
+      likes: zod.number().nullish(),
+      shares: zod.number().nullish(),
+      comments: zod.number().nullish(),
+      reach: zod.number().nullish(),
+      createdAt: zod.string(),
+      scheduledAt: zod.string().nullish(),
+      publishedAt: zod.string().nullish(),
+    })
+    .optional(),
+});
+export const ListSchedulesResponse = zod.array(ListSchedulesResponseItem);
 
 /**
  * @summary Schedule a post
  */
 export const CreateScheduleBody = zod.object({
-  "postId": zod.number(),
-  "scheduledAt": zod.string(),
-  "platform": zod.string()
-})
+  postId: zod.number(),
+  scheduledAt: zod.string(),
+  platform: zod.string(),
+});
 
 export const CreateScheduleResponse = zod.object({
-  "id": zod.number(),
-  "postId": zod.number(),
-  "scheduledAt": zod.string(),
-  "platform": zod.string(),
-  "status": zod.enum(['pending', 'sent', 'failed', 'cancelled']),
-  "createdAt": zod.string(),
-  "post": zod.object({
-  "id": zod.number(),
-  "content": zod.string(),
-  "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "status": zod.enum(['draft', 'scheduled', 'published', 'failed']),
-  "tone": zod.string().nullish(),
-  "imageUrl": zod.string().nullish(),
-  "engagementScore": zod.number().nullish(),
-  "likes": zod.number().nullish(),
-  "shares": zod.number().nullish(),
-  "comments": zod.number().nullish(),
-  "reach": zod.number().nullish(),
-  "createdAt": zod.string(),
-  "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish()
-}).optional()
-})
-
+  id: zod.number(),
+  postId: zod.number(),
+  scheduledAt: zod.string(),
+  platform: zod.string(),
+  status: zod.enum(["pending", "sent", "failed", "cancelled"]),
+  createdAt: zod.string(),
+  post: zod
+    .object({
+      id: zod.number(),
+      content: zod.string(),
+      caption: zod.string().nullish(),
+      hashtags: zod.string().nullish(),
+      platform: zod.enum(["linkedin"]),
+      status: zod.enum(["draft", "scheduled", "published", "failed"]),
+      tone: zod.string().nullish(),
+      imageUrl: zod.string().nullish(),
+      engagementScore: zod.number().nullish(),
+      likes: zod.number().nullish(),
+      shares: zod.number().nullish(),
+      comments: zod.number().nullish(),
+      reach: zod.number().nullish(),
+      createdAt: zod.string(),
+      scheduledAt: zod.string().nullish(),
+      publishedAt: zod.string().nullish(),
+    })
+    .optional(),
+});
 
 /**
  * @summary Update a schedule
  */
 export const UpdateScheduleParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
 export const UpdateScheduleBody = zod.object({
-  "scheduledAt": zod.string().optional(),
-  "status": zod.string().optional()
-})
+  scheduledAt: zod.string().optional(),
+  status: zod.string().optional(),
+});
 
 export const UpdateScheduleResponse = zod.object({
-  "id": zod.number(),
-  "postId": zod.number(),
-  "scheduledAt": zod.string(),
-  "platform": zod.string(),
-  "status": zod.enum(['pending', 'sent', 'failed', 'cancelled']),
-  "createdAt": zod.string(),
-  "post": zod.object({
-  "id": zod.number(),
-  "content": zod.string(),
-  "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "status": zod.enum(['draft', 'scheduled', 'published', 'failed']),
-  "tone": zod.string().nullish(),
-  "imageUrl": zod.string().nullish(),
-  "engagementScore": zod.number().nullish(),
-  "likes": zod.number().nullish(),
-  "shares": zod.number().nullish(),
-  "comments": zod.number().nullish(),
-  "reach": zod.number().nullish(),
-  "createdAt": zod.string(),
-  "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish()
-}).optional()
-})
-
+  id: zod.number(),
+  postId: zod.number(),
+  scheduledAt: zod.string(),
+  platform: zod.string(),
+  status: zod.enum(["pending", "sent", "failed", "cancelled"]),
+  createdAt: zod.string(),
+  post: zod
+    .object({
+      id: zod.number(),
+      content: zod.string(),
+      caption: zod.string().nullish(),
+      hashtags: zod.string().nullish(),
+      platform: zod.enum(["linkedin"]),
+      status: zod.enum(["draft", "scheduled", "published", "failed"]),
+      tone: zod.string().nullish(),
+      imageUrl: zod.string().nullish(),
+      engagementScore: zod.number().nullish(),
+      likes: zod.number().nullish(),
+      shares: zod.number().nullish(),
+      comments: zod.number().nullish(),
+      reach: zod.number().nullish(),
+      createdAt: zod.string(),
+      scheduledAt: zod.string().nullish(),
+      publishedAt: zod.string().nullish(),
+    })
+    .optional(),
+});
 
 /**
  * @summary Delete a schedule
  */
 export const DeleteScheduleParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
-export const DeleteScheduleResponse = zod.void()
-
+export const DeleteScheduleResponse = zod.void();
 
 /**
  * @summary Generate social media post content
  */
 export const GenerateContentBody = zod.object({
-  "topic": zod.string(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "tone": zod.enum(['professional', 'funny', 'casual', 'luxury', 'startup', 'corporate']).optional(),
-  "includeHashtags": zod.boolean().optional(),
-  "includeEmojis": zod.boolean().optional(),
-  "variations": zod.number().optional()
-})
+  topic: zod.string(),
+  platform: zod.enum(["linkedin"]),
+  tone: zod
+    .enum(["professional", "funny", "casual", "luxury", "startup", "corporate"])
+    .optional(),
+  includeHashtags: zod.boolean().optional(),
+  includeEmojis: zod.boolean().optional(),
+  variations: zod.number().optional(),
+});
 
 export const GenerateContentResponse = zod.object({
-  "variations": zod.array(zod.object({
-  "content": zod.string(),
-  "hashtags": zod.string().optional(),
-  "cta": zod.string().optional()
-}))
-})
-
+  variations: zod.array(
+    zod.object({
+      content: zod.string(),
+      hashtags: zod.string().optional(),
+      cta: zod.string().optional(),
+    }),
+  ),
+});
 
 /**
  * @summary Generate hashtags for a post
  */
 export const GenerateHashtagsBody = zod.object({
-  "content": zod.string(),
-  "platform": zod.string().optional(),
-  "count": zod.number().optional()
-})
+  content: zod.string(),
+  platform: zod.string().optional(),
+  count: zod.number().optional(),
+});
 
 export const GenerateHashtagsResponse = zod.object({
-  "hashtags": zod.array(zod.string())
-})
-
+  hashtags: zod.array(zod.string()),
+});
 
 /**
  * @summary Generate an auto-reply in brand voice
  */
 export const GenerateReplyBody = zod.object({
-  "commentText": zod.string(),
-  "platform": zod.string(),
-  "context": zod.string().optional()
-})
+  commentText: zod.string(),
+  platform: zod.string(),
+  context: zod.string().optional(),
+});
 
 export const GenerateReplyResponse = zod.object({
-  "reply": zod.string(),
-  "sentiment": zod.string().optional()
-})
-
+  reply: zod.string(),
+  sentiment: zod.string().optional(),
+});
 
 /**
  * @summary Chat with the AI assistant
  */
 export const AiChatBody = zod.object({
-  "message": zod.string(),
-  "conversationId": zod.string().nullish()
-})
+  message: zod.string(),
+  conversationId: zod.string().nullish(),
+});
 
 export const AiChatResponse = zod.object({
-  "response": zod.string(),
-  "conversationId": zod.string().optional()
-})
-
+  response: zod.string(),
+  conversationId: zod.string().optional(),
+});
 
 /**
  * @summary Get high-level analytics overview
  */
 export const GetAnalyticsOverviewResponse = zod.object({
-  "totalPosts": zod.number(),
-  "totalReach": zod.number(),
-  "totalEngagement": zod.number(),
-  "followerCount": zod.number(),
-  "engagementRate": zod.number(),
-  "impressions": zod.number(),
-  "postsThisWeek": zod.number().optional(),
-  "growthPercent": zod.number().optional()
-})
-
+  totalPosts: zod.number(),
+  totalReach: zod.number(),
+  totalEngagement: zod.number(),
+  followerCount: zod.number(),
+  engagementRate: zod.number(),
+  impressions: zod.number(),
+  postsThisWeek: zod.number().optional(),
+  growthPercent: zod.number().optional(),
+});
 
 /**
  * @summary Get analytics broken down by platform
  */
 export const GetAnalyticsByPlatformResponseItem = zod.object({
-  "platform": zod.string(),
-  "posts": zod.number(),
-  "reach": zod.number(),
-  "engagement": zod.number(),
-  "followers": zod.number(),
-  "engagementRate": zod.number().optional()
-})
-export const GetAnalyticsByPlatformResponse = zod.array(GetAnalyticsByPlatformResponseItem)
-
+  platform: zod.string(),
+  posts: zod.number(),
+  reach: zod.number(),
+  engagement: zod.number(),
+  followers: zod.number(),
+  engagementRate: zod.number().optional(),
+});
+export const GetAnalyticsByPlatformResponse = zod.array(
+  GetAnalyticsByPlatformResponseItem,
+);
 
 /**
  * @summary Get engagement trend data over time
  */
 export const GetAnalyticsTrendsQueryParams = zod.object({
-  "days": zod.coerce.number().optional()
-})
+  days: zod.coerce.number().optional(),
+});
 
 export const GetAnalyticsTrendsResponseItem = zod.object({
-  "date": zod.string(),
-  "engagement": zod.number(),
-  "reach": zod.number(),
-  "impressions": zod.number(),
-  "followers": zod.number().optional()
-})
-export const GetAnalyticsTrendsResponse = zod.array(GetAnalyticsTrendsResponseItem)
-
+  date: zod.string(),
+  engagement: zod.number(),
+  reach: zod.number(),
+  impressions: zod.number(),
+  followers: zod.number().optional(),
+});
+export const GetAnalyticsTrendsResponse = zod.array(
+  GetAnalyticsTrendsResponseItem,
+);
 
 /**
  * @summary List comments and mentions
  */
 export const ListCommentsQueryParams = zod.object({
-  "platform": zod.coerce.string().optional(),
-  "status": zod.coerce.string().optional(),
-  "limit": zod.coerce.number().optional()
-})
+  platform: zod.coerce.string().optional(),
+  status: zod.coerce.string().optional(),
+  limit: zod.coerce.number().optional(),
+});
 
 export const ListCommentsResponseItem = zod.object({
-  "id": zod.number(),
-  "postId": zod.number().nullish(),
-  "authorName": zod.string(),
-  "authorAvatar": zod.string().nullish(),
-  "content": zod.string(),
-  "platform": zod.string(),
-  "status": zod.enum(['pending', 'replied', 'resolved', 'escalated', 'spam']),
-  "sentiment": zod.string().nullish(),
-  "reply": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-export const ListCommentsResponse = zod.array(ListCommentsResponseItem)
-
+  id: zod.number(),
+  postId: zod.number().nullish(),
+  authorName: zod.string(),
+  authorAvatar: zod.string().nullish(),
+  content: zod.string(),
+  platform: zod.string(),
+  status: zod.enum(["pending", "replied", "resolved", "escalated", "spam"]),
+  sentiment: zod.string().nullish(),
+  reply: zod.string().nullish(),
+  createdAt: zod.string(),
+});
+export const ListCommentsResponse = zod.array(ListCommentsResponseItem);
 
 /**
  * @summary Reply to a comment
  */
 export const ReplyToCommentParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
 export const ReplyToCommentBody = zod.object({
-  "reply": zod.string()
-})
+  reply: zod.string(),
+});
 
 export const ReplyToCommentResponse = zod.object({
-  "id": zod.number(),
-  "postId": zod.number().nullish(),
-  "authorName": zod.string(),
-  "authorAvatar": zod.string().nullish(),
-  "content": zod.string(),
-  "platform": zod.string(),
-  "status": zod.enum(['pending', 'replied', 'resolved', 'escalated', 'spam']),
-  "sentiment": zod.string().nullish(),
-  "reply": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-
+  id: zod.number(),
+  postId: zod.number().nullish(),
+  authorName: zod.string(),
+  authorAvatar: zod.string().nullish(),
+  content: zod.string(),
+  platform: zod.string(),
+  status: zod.enum(["pending", "replied", "resolved", "escalated", "spam"]),
+  sentiment: zod.string().nullish(),
+  reply: zod.string().nullish(),
+  createdAt: zod.string(),
+});
 
 /**
  * @summary Update comment status (resolve, escalate, spam)
  */
 export const UpdateCommentStatusParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
 export const UpdateCommentStatusBody = zod.object({
-  "status": zod.enum(['pending', 'replied', 'resolved', 'escalated', 'spam'])
-})
+  status: zod.enum(["pending", "replied", "resolved", "escalated", "spam"]),
+});
 
 export const UpdateCommentStatusResponse = zod.object({
-  "id": zod.number(),
-  "postId": zod.number().nullish(),
-  "authorName": zod.string(),
-  "authorAvatar": zod.string().nullish(),
-  "content": zod.string(),
-  "platform": zod.string(),
-  "status": zod.enum(['pending', 'replied', 'resolved', 'escalated', 'spam']),
-  "sentiment": zod.string().nullish(),
-  "reply": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-
+  id: zod.number(),
+  postId: zod.number().nullish(),
+  authorName: zod.string(),
+  authorAvatar: zod.string().nullish(),
+  content: zod.string(),
+  platform: zod.string(),
+  status: zod.enum(["pending", "replied", "resolved", "escalated", "spam"]),
+  sentiment: zod.string().nullish(),
+  reply: zod.string().nullish(),
+  createdAt: zod.string(),
+});
 
 /**
  * @summary Get brand settings
  */
 export const GetBrandResponse = zod.object({
-  "id": zod.number(),
-  "name": zod.string(),
-  "description": zod.string().nullish(),
-  "mission": zod.string().nullish(),
-  "vision": zod.string().nullish(),
-  "toneOfVoice": zod.string().nullish(),
-  "primaryColor": zod.string().nullish(),
-  "secondaryColor": zod.string().nullish(),
-  "logoUrl": zod.string().nullish(),
-  "website": zod.string().nullish(),
-  "industry": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string().nullish(),
+  mission: zod.string().nullish(),
+  vision: zod.string().nullish(),
+  toneOfVoice: zod.string().nullish(),
+  primaryColor: zod.string().nullish(),
+  secondaryColor: zod.string().nullish(),
+  logoUrl: zod.string().nullish(),
+  website: zod.string().nullish(),
+  industry: zod.string().nullish(),
+  createdAt: zod.string(),
+});
 
 /**
  * @summary Update brand settings
  */
 export const UpdateBrandBody = zod.object({
-  "name": zod.string().optional(),
-  "description": zod.string().optional(),
-  "mission": zod.string().optional(),
-  "vision": zod.string().optional(),
-  "toneOfVoice": zod.string().optional(),
-  "primaryColor": zod.string().optional(),
-  "secondaryColor": zod.string().optional(),
-  "logoUrl": zod.string().optional(),
-  "website": zod.string().optional(),
-  "industry": zod.string().optional()
-})
+  name: zod.string().optional(),
+  description: zod.string().optional(),
+  mission: zod.string().optional(),
+  vision: zod.string().optional(),
+  toneOfVoice: zod.string().optional(),
+  primaryColor: zod.string().optional(),
+  secondaryColor: zod.string().optional(),
+  logoUrl: zod.string().optional(),
+  website: zod.string().optional(),
+  industry: zod.string().optional(),
+});
 
 export const UpdateBrandResponse = zod.object({
-  "id": zod.number(),
-  "name": zod.string(),
-  "description": zod.string().nullish(),
-  "mission": zod.string().nullish(),
-  "vision": zod.string().nullish(),
-  "toneOfVoice": zod.string().nullish(),
-  "primaryColor": zod.string().nullish(),
-  "secondaryColor": zod.string().nullish(),
-  "logoUrl": zod.string().nullish(),
-  "website": zod.string().nullish(),
-  "industry": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string().nullish(),
+  mission: zod.string().nullish(),
+  vision: zod.string().nullish(),
+  toneOfVoice: zod.string().nullish(),
+  primaryColor: zod.string().nullish(),
+  secondaryColor: zod.string().nullish(),
+  logoUrl: zod.string().nullish(),
+  website: zod.string().nullish(),
+  industry: zod.string().nullish(),
+  createdAt: zod.string(),
+});
 
 /**
  * @summary List knowledge base items
  */
 export const ListKnowledgeResponseItem = zod.object({
-  "id": zod.number(),
-  "title": zod.string(),
-  "content": zod.string().nullish(),
-  "type": zod.enum(['document', 'product', 'faq', 'post_example', 'guideline']),
-  "fileUrl": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-export const ListKnowledgeResponse = zod.array(ListKnowledgeResponseItem)
-
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string().nullish(),
+  type: zod.enum(["document", "product", "faq", "post_example", "guideline"]),
+  fileUrl: zod.string().nullish(),
+  createdAt: zod.string(),
+});
+export const ListKnowledgeResponse = zod.array(ListKnowledgeResponseItem);
 
 /**
  * @summary Add a knowledge base item
  */
 export const CreateKnowledgeBody = zod.object({
-  "title": zod.string(),
-  "content": zod.string().optional(),
-  "type": zod.enum(['document', 'product', 'faq', 'post_example', 'guideline']),
-  "fileUrl": zod.string().optional()
-})
+  title: zod.string(),
+  content: zod.string().optional(),
+  type: zod.enum(["document", "product", "faq", "post_example", "guideline"]),
+  fileUrl: zod.string().optional(),
+});
 
 export const CreateKnowledgeResponse = zod.object({
-  "id": zod.number(),
-  "title": zod.string(),
-  "content": zod.string().nullish(),
-  "type": zod.enum(['document', 'product', 'faq', 'post_example', 'guideline']),
-  "fileUrl": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string().nullish(),
+  type: zod.enum(["document", "product", "faq", "post_example", "guideline"]),
+  fileUrl: zod.string().nullish(),
+  createdAt: zod.string(),
+});
 
 /**
  * @summary Delete a knowledge item
  */
 export const DeleteKnowledgeParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
-export const DeleteKnowledgeResponse = zod.void()
-
+export const DeleteKnowledgeResponse = zod.void();
 
 /**
  * @summary List team members
  */
 export const ListTeamResponseItem = zod.object({
-  "id": zod.number(),
-  "email": zod.string(),
-  "name": zod.string().nullish(),
-  "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['owner', 'admin', 'editor', 'viewer']),
-  "status": zod.enum(['active', 'invited', 'inactive']),
-  "createdAt": zod.string()
-})
-export const ListTeamResponse = zod.array(ListTeamResponseItem)
-
+  id: zod.number(),
+  email: zod.string(),
+  name: zod.string().nullish(),
+  avatarUrl: zod.string().nullish(),
+  role: zod.enum(["owner", "admin", "editor", "viewer"]),
+  status: zod.enum(["active", "invited", "inactive"]),
+  createdAt: zod.string(),
+});
+export const ListTeamResponse = zod.array(ListTeamResponseItem);
 
 /**
  * @summary Invite a team member
  */
 export const InviteTeamMemberBody = zod.object({
-  "email": zod.string(),
-  "role": zod.enum(['admin', 'editor', 'viewer'])
-})
+  email: zod.string(),
+  role: zod.enum(["admin", "editor", "viewer"]),
+});
 
 export const InviteTeamMemberResponse = zod.object({
-  "id": zod.number(),
-  "email": zod.string(),
-  "name": zod.string().nullish(),
-  "avatarUrl": zod.string().nullish(),
-  "role": zod.enum(['owner', 'admin', 'editor', 'viewer']),
-  "status": zod.enum(['active', 'invited', 'inactive']),
-  "createdAt": zod.string()
-})
-
+  id: zod.number(),
+  email: zod.string(),
+  name: zod.string().nullish(),
+  avatarUrl: zod.string().nullish(),
+  role: zod.enum(["owner", "admin", "editor", "viewer"]),
+  status: zod.enum(["active", "invited", "inactive"]),
+  createdAt: zod.string(),
+});
 
 /**
  * @summary Remove a team member
  */
 export const RemoveTeamMemberParams = zod.object({
-  "id": zod.coerce.number()
-})
+  id: zod.coerce.number(),
+});
 
-export const RemoveTeamMemberResponse = zod.void()
-
+export const RemoveTeamMemberResponse = zod.void();
 
 /**
  * @summary Get dashboard overview summary cards
  */
 export const GetDashboardSummaryResponse = zod.object({
-  "totalPosts": zod.number(),
-  "scheduledPosts": zod.number(),
-  "publishedToday": zod.number(),
-  "pendingComments": zod.number(),
-  "totalReach": zod.number(),
-  "engagementRate": zod.number(),
-  "followerCount": zod.number().optional(),
-  "followerGrowth": zod.number().optional()
-})
-
+  totalPosts: zod.number(),
+  scheduledPosts: zod.number(),
+  publishedToday: zod.number(),
+  pendingComments: zod.number(),
+  totalReach: zod.number(),
+  engagementRate: zod.number(),
+  followerCount: zod.number().optional(),
+  followerGrowth: zod.number().optional(),
+});
 
 /**
  * @summary Get recent activity feed
  */
 export const GetDashboardActivityQueryParams = zod.object({
-  "limit": zod.coerce.number().optional()
-})
+  limit: zod.coerce.number().optional(),
+});
 
 export const GetDashboardActivityResponseItem = zod.object({
-  "id": zod.number(),
-  "type": zod.enum(['post_published', 'comment_received', 'reply_sent', 'schedule_created', 'brand_updated', 'member_invited']),
-  "description": zod.string(),
-  "platform": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-export const GetDashboardActivityResponse = zod.array(GetDashboardActivityResponseItem)
-
+  id: zod.number(),
+  type: zod.enum([
+    "post_published",
+    "comment_received",
+    "reply_sent",
+    "schedule_created",
+    "brand_updated",
+    "member_invited",
+  ]),
+  description: zod.string(),
+  platform: zod.string().nullish(),
+  createdAt: zod.string(),
+});
+export const GetDashboardActivityResponse = zod.array(
+  GetDashboardActivityResponseItem,
+);
 
 /**
  * @summary Get top performing posts
  */
 export const GetDashboardTopPostsResponseItem = zod.object({
-  "id": zod.number(),
-  "content": zod.string(),
-  "caption": zod.string().nullish(),
-  "hashtags": zod.string().nullish(),
-  "platform": zod.enum(['twitter', 'linkedin', 'instagram', 'facebook']),
-  "status": zod.enum(['draft', 'scheduled', 'published', 'failed']),
-  "tone": zod.string().nullish(),
-  "imageUrl": zod.string().nullish(),
-  "engagementScore": zod.number().nullish(),
-  "likes": zod.number().nullish(),
-  "shares": zod.number().nullish(),
-  "comments": zod.number().nullish(),
-  "reach": zod.number().nullish(),
-  "createdAt": zod.string(),
-  "scheduledAt": zod.string().nullish(),
-  "publishedAt": zod.string().nullish()
-})
-export const GetDashboardTopPostsResponse = zod.array(GetDashboardTopPostsResponseItem)
-
-
+  id: zod.number(),
+  content: zod.string(),
+  caption: zod.string().nullish(),
+  hashtags: zod.string().nullish(),
+  platform: zod.enum(["linkedin"]),
+  status: zod.enum(["draft", "scheduled", "published", "failed"]),
+  tone: zod.string().nullish(),
+  imageUrl: zod.string().nullish(),
+  engagementScore: zod.number().nullish(),
+  likes: zod.number().nullish(),
+  shares: zod.number().nullish(),
+  comments: zod.number().nullish(),
+  reach: zod.number().nullish(),
+  createdAt: zod.string(),
+  scheduledAt: zod.string().nullish(),
+  publishedAt: zod.string().nullish(),
+});
+export const GetDashboardTopPostsResponse = zod.array(
+  GetDashboardTopPostsResponseItem,
+);

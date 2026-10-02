@@ -145,7 +145,7 @@ router.get("/linkedin/callback", async (req, res) => {
       httpOnly: true, 
       secure: true,
       sameSite: "none",
-      path: "/"
+      path: "/dashboard"
     });
 
     // 🚀 FIX: Pass the token in the URL to bypass 3rd-party cookie blocking

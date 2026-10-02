@@ -1,11 +1,10 @@
-import { useUser } from "@clerk/react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { User, Mail, Shield, Save } from "lucide-react";
+import { User, Mail, Linkedin } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function DashboardProfile() {
-  const { user } = useUser();
+  const { user } = useAuth();
 
   if (!user) return null;
 
@@ -22,45 +21,40 @@ export default function DashboardProfile() {
         <CardContent className="p-8">
           <div className="flex items-center gap-6 mb-8 pb-8 border-b border-white/5">
             <div className="relative">
-              <img 
-                src={user.imageUrl} 
-                alt={user.fullName || "User"} 
-                className="w-24 h-24 rounded-2xl border-2 border-white/10"
-              />
-              <button className="absolute -bottom-2 -right-2 bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center border border-white/10 hover:bg-violet-700 transition-colors">
-                <User className="w-4 h-4" />
-              </button>
+              {user.avatarUrl ? (
+                <img 
+                  src={user.avatarUrl} 
+                  alt={user.name || "User"} 
+                  className="w-24 h-24 rounded-2xl border-2 border-white/10 object-cover"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-2xl border-2 border-white/10 bg-zinc-800 flex items-center justify-center">
+                  <User className="w-10 h-10 text-zinc-500" />
+                </div>
+              )}
+              <div className="absolute -bottom-2 -right-2 bg-[#0A66C2] text-white w-8 h-8 rounded-full flex items-center justify-center border border-white/10">
+                <Linkedin className="w-4 h-4" />
+              </div>
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white mb-1">{user.fullName}</h3>
-              <p className="text-zinc-400">{user.primaryEmailAddress?.emailAddress}</p>
+              <h3 className="text-xl font-bold text-white mb-1">{user.name}</h3>
+              <p className="text-zinc-400">{user.email}</p>
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-300">First Name</label>
-                <div className="relative">
-                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-                  <Input 
-                    defaultValue={user.firstName || ""} 
-                    className="bg-black/50 border-white/10 pl-10 text-white" 
-                    readOnly
-                  />
-                </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-300">Full Name</label>
+              <div className="relative">
+                <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                <Input 
+                  defaultValue={user.name || ""} 
+                  className="bg-black/50 border-white/10 pl-10 text-white" 
+                  readOnly
+                  disabled
+                />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-300">Last Name</label>
-                <div className="relative">
-                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-                  <Input 
-                    defaultValue={user.lastName || ""} 
-                    className="bg-black/50 border-white/10 pl-10 text-white" 
-                    readOnly
-                  />
-                </div>
-              </div>
+              <p className="text-xs text-zinc-500 mt-1">Your name is synced directly from your LinkedIn profile.</p>
             </div>
 
             <div className="space-y-2">
@@ -68,34 +62,15 @@ export default function DashboardProfile() {
               <div className="relative">
                 <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
                 <Input 
-                  defaultValue={user.primaryEmailAddress?.emailAddress || ""} 
+                  defaultValue={user.email || ""} 
                   className="bg-black/50 border-white/10 pl-10 text-white text-zinc-500" 
+                  readOnly
                   disabled
                 />
               </div>
-              <p className="text-xs text-zinc-500 mt-1">To change your email, please use the account security settings.</p>
-            </div>
-
-            <div className="pt-6 flex justify-end">
-              <Button className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6">
-                <Save className="w-4 h-4 mr-2" /> Save Changes
-              </Button>
+              <p className="text-xs text-zinc-500 mt-1">To change your email, please update it on your connected LinkedIn account.</p>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card className="glass-panel border-white/5 bg-[#0A0A0F]/80">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
-            <Shield className="w-5 h-5 text-zinc-400" /> Security
-          </CardTitle>
-          <CardDescription className="text-zinc-400">Manage your account security and password</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white">
-            Change Password
-          </Button>
         </CardContent>
       </Card>
     </div>

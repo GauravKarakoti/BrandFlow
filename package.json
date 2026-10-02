@@ -15,7 +15,8 @@
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --if-present run typecheck",
-    "postinstall": "pnpm run db:gen && pnpm run codegen"
+    "postinstall": "pnpm run db:gen && pnpm run codegen",
+    "ngrok": "ngrok http 3000"
   },
   "private": true,
   "devDependencies": {

@@ -5,8 +5,8 @@ export interface Env {
   B2_APPLICATION_KEY: string;
   B2_REGION: string;
   B2_ENDPOINT: string;   // e.g., s3.us-west-004.backblazeb2.com
-  BUCKET_NAME: string;   // e.g., BrandFlowAssets
-  ALLOWED_ORIGIN: string; // e.g., https://app.brandflow.com or *
+  BUCKET_NAME: string;   // e.g., Assets
+  ALLOWED_ORIGIN: string; // e.g., https://app..com or *
 }
 
 export default {

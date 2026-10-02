@@ -4,7 +4,6 @@ import { agentSettings, brandKnowledgeBase, posts } from '@workspace/db/schema';
 import { eq, and, gte, lte } from 'drizzle-orm';
 import Groq from 'groq-sdk';
 
-// Initialize the Groq client
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 /**
@@ -14,12 +13,10 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 export function initAgentWorker() {
   console.log("🤖 Autonomous Agent Worker initialized. Scheduled to run daily at 8:00 AM...");
 
-  // Wake up every day at 8:00 AM server time to evaluate autonomous agents
   cron.schedule('0 8 * * *', async () => {
     console.log('[CRON] Wake up: Running Autonomous BrandFlow Agent...');
 
     try {
-      // 1. Fetch all active agents
       const activeAgents = await db
         .select()
         .from(agentSettings)

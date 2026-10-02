@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { useAiChat } from "@workspace/api-client-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Send, Bot, User } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useUser } from "@clerk/react";
+import { useAuth } from "@/context/AuthContext";
+import { BACKEND_URL } from "@/lib/utils";
 
 interface Message {
   role: "user" | "ai";
@@ -12,33 +11,37 @@ interface Message {
 }
 
 export default function DashboardAiChat() {
-  const { user } = useUser();
+  const { authFetch } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     { role: "ai", content: "Hello! I'm BrandFlow AI. I can help you draft posts, analyze trends, or answer questions about your brand's data. What can I do for you today?" }
   ]);
   const [input, setInput] = useState("");
+  const [isPending, setIsPending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  
-  const chatMutation = useAiChat();
 
-  const handleSend = () => {
-    if (!input.trim() || chatMutation.isPending) return;
+  const handleSend = async () => {
+    if (!input.trim() || isPending) return;
 
     const userMessage = input.trim();
     setInput("");
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    setIsPending(true);
 
-    chatMutation.mutate(
-      { data: { message: userMessage } },
-      {
-        onSuccess: (data) => {
-          setMessages(prev => [...prev, { role: "ai", content: data.response }]);
-        },
-        onError: () => {
-          setMessages(prev => [...prev, { role: "ai", content: "Sorry, I'm having trouble connecting to the server right now." }]);
-        }
-      }
-    );
+    try {
+      const res = await authFetch(`${BACKEND_URL}/api/ai/chat`, {
+        method: "POST",
+        body: JSON.stringify({ message: userMessage })
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch response");
+      
+      const data = await res.json();
+      setMessages(prev => [...prev, { role: "ai", content: data.response }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { role: "ai", content: "Sorry, I'm having trouble connecting to the server right now." }]);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   useEffect(() => {
@@ -84,7 +87,7 @@ export default function DashboardAiChat() {
             </div>
           </div>
         ))}
-        {chatMutation.isPending && (
+        {isPending && (
           <div className="flex gap-4 max-w-[80%]">
             <div className="w-8 h-8 rounded-full bg-violet-600/20 border border-violet-500/30 flex items-center justify-center shrink-0 mt-1">
               <Sparkles className="w-4 h-4 text-violet-400" />
@@ -114,13 +117,13 @@ export default function DashboardAiChat() {
             type="submit" 
             size="icon" 
             className="absolute right-1 top-1 h-10 w-10 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition-all shadow-[0_0_10px_rgba(124,58,237,0.3)]"
-            disabled={!input.trim() || chatMutation.isPending}
+            disabled={!input.trim() || isPending}
           >
             <Send className="w-4 h-4" />
           </Button>
         </form>
         <div className="flex gap-2 justify-center mt-3 flex-wrap">
-          {["Draft a tweet about our new launch", "Analyze my top performing posts", "What's the best time to post?"].map((prompt, i) => (
+          {["Draft a post about our new launch", "Analyze my top performing posts", "What's the best time to post?"].map((prompt, i) => (
             <button 
               key={i}
               type="button"

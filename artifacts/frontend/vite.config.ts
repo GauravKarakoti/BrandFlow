@@ -4,35 +4,29 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, loadEnv } from 'vite';
 
 export default defineConfig(({ mode }) => {
-  // Load env variables from .env files in the current directory.
-  // The third argument '' tells Vite to load all variables, not just ones prefixed with VITE_
+  // Load env variables
   const env = loadEnv(mode, process.cwd(), '');
 
-  const rawPort = env.PORT || '5134';
+  const rawPort = env.PORT || '5173';
   const port = Number(rawPort);
 
   if (Number.isNaN(port) || port <= 0) {
     throw new Error(`Invalid PORT value: "${rawPort}"`);
   }
 
-  // Provide a fallback base path
   const basePath = env.BASE_PATH || '/';
 
   return {
     base: basePath,
     plugins: [
       react(),
-      tailwindcss(),
+      tailwindcss({ optimize: false }),
+      // Vite's native error overlay will automatically handle runtime errors now
     ],
     resolve: {
       alias: {
         '@': path.resolve(import.meta.dirname, 'src'),
-        '@assets': path.resolve(
-          import.meta.dirname,
-          '..',
-          '..',
-          'attached_assets',
-        ),
+        '@assets': path.resolve(import.meta.dirname, '..', '..', 'attached_assets'),
       },
       dedupe: ['react', 'react-dom'],
     },
@@ -42,16 +36,8 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       rollupOptions: {
         onwarn(warning, defaultHandler) {
-          // Suppress "Module level directives cause errors when bundled" warnings ("use client")
-          if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
-            return;
-          }
-          // Suppress the specific sourcemap error you are seeing
-          if (warning.message.includes('Error when using sourcemap for reporting an error')) {
-            return;
-          }
-          
-          // Let all other warnings pass through to the terminal
+          if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
+          if (warning.message.includes('Error when using sourcemap for reporting an error')) return;
           defaultHandler(warning);
         },
       },
@@ -62,9 +48,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
       host: '0.0.0.0',
       allowedHosts: true,
-      fs: {
-        strict: true,
-      },
+      fs: { strict: true },
     },
     preview: {
       port,
