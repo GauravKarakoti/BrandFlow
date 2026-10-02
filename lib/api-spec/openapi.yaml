@@ -652,15 +652,15 @@ components:
         imageUrl:
           type: ["string", "null"]
         engagementScore:
-          type: ["integer", "null"]
+          type: ["number", "null"]
         likes:
-          type: ["integer", "null"]
+          type: ["number", "null"]
         shares:
-          type: ["integer", "null"]
+          type: ["number", "null"]
         comments:
-          type: ["integer", "null"]
+          type: ["number", "null"]
         reach:
-          type: ["integer", "null"]
+          type: ["number", "null"]
         createdAt:
           type: string
         scheduledAt:
@@ -908,7 +908,7 @@ components:
         id:
           type: number
         postId:
-          type: ["integer", "null"]
+          type: ["number", "null"]
         authorName:
           type: string
         authorAvatar:
